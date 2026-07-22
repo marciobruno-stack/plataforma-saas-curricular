@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Login - SaaS Curricular</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f6f9; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 320px; }
+        .form-group { margin-bottom: 1rem; }
+        label { display: block; margin-bottom: .5rem; font-weight: bold; }
+        input { width: 100%; padding: .5rem; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
+        button { width: 100%; padding: .75rem; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 1rem; }
+        button:hover { background-color: #0056b3; }
+        .alert { color: red; font-size: 0.9rem; margin-bottom: 1rem; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>Entrar na Plataforma</h2>
+
+    <div th:if="${param.erro}" class="alert">
+        Email ou password inválidos.
+    </div>
+    <div th:if="${param.sucesso}" style="color: green;" class="alert">
+        Registo efetuado com sucesso! Faça login.
+    </div>
+
+    <form th:action="@{/login}" method="post">
+        <div class="form-group">
+            <label>Email:</label>
+            <input type="email" name="username" required autofocus />
+        </div>
+        <div class="form-group">
+            <label>Password:</label>
+            <input type="password" name="password" required />
+        </div>
+        <button type="submit">Entrar</button>
+    </form>
+
+    <p style="text-align: center; margin-top: 1rem;">
+        Não tem conta? <a th:href="@{/registo}">Registar Formador</a>
+    </p>
+</div>
+
+</body>
+</html>
