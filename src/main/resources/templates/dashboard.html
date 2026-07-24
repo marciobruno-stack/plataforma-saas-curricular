@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - SaaS Curricular</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 0; }
+        .header { background-color: #007bff; color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .header h1 { margin: 0; font-size: 1.5rem; }
+        .logout-btn { background-color: #dc3545; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; text-decoration: none; font-size: 0.9rem; }
+        .logout-btn:hover { background-color: #c82333; }
+        .container { padding: 2rem; max-width: 1200px; margin: 0 auto; }
+        .card { background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 1rem; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>SaaS Curricular - Workspace do Formador</h1>
+    <div>
+        <span style="margin-right: 15px;" sec:authentication="name">User</span>
+        <form th:action="@{/logout}" method="post" style="display: inline;">
+            <button type="submit" class="logout-btn">Sair</button>
+        </form>
+    </div>
+</div>
+
+<div class="container">
+    <div class="card">
+        <h2>Bem-vindo!</h2>
+        <p>Este é o teu espaço pessoal (isolado). Aqui poderás gerir as tuas Perguntas e Fichas de Trabalho nos próximos dias.</p>
+    </div>
+    
+    <div class="card">
+        <h3>Estatísticas Rápidas</h3>
+        <p>As tuas fichas: 0</p>
+        <p>As tuas perguntas: 0</p>
+    </div>
+</div>
+
+</body>
+</html>
