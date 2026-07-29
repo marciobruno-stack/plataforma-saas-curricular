@@ -12,4 +12,9 @@ public class HomeController {
     public String home() {
         return "index"; // Chama o index.html
     }
+
+    @GetMapping("/dashboard")
+    public String dashboard() {
+        return "dashboard"; // Chama o dashboard.html
+    }
 }
