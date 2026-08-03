@@ -15,14 +15,16 @@ import java.util.Optional;
 public class FichaController {
 
     private final FichaService fichaService;
+    private final SecurityUtils securityUtils;
 
-    public FichaController(FichaService fichaService) {
+    public FichaController(FichaService fichaService, SecurityUtils securityUtils) {
         this.fichaService = fichaService;
+        this.securityUtils = securityUtils;
     }
 
     @GetMapping
     public String listarFichas(Model model) {
-        Utilizador formador = SecurityUtils.getCurrentUser();
+        Utilizador formador = securityUtils.getCurrentUser();
         model.addAttribute("fichas", fichaService.listarFichasDoFormador(formador));
         return "fichas/lista";
     }
@@ -35,7 +37,7 @@ public class FichaController {
 
     @PostMapping("/nova")
     public String salvarNovaFicha(@ModelAttribute Ficha ficha) {
-        Utilizador formador = SecurityUtils.getCurrentUser();
+        Utilizador formador = securityUtils.getCurrentUser();
         fichaService.guardarFicha(ficha, formador);
         return "redirect:/fichas?sucesso";
     }
@@ -43,7 +45,7 @@ public class FichaController {
     @GetMapping("/editar/{id}")
     public String editarFichaForm(@PathVariable Long id, Model model) {
         Optional<Ficha> fichaOpt = fichaService.encontrarFichaPorId(id);
-        Utilizador formador = SecurityUtils.getCurrentUser();
+        Utilizador formador = securityUtils.getCurrentUser();
         
         // Proteção de segurança: verificar se a ficha existe e pertence a este formador
         if (fichaOpt.isPresent() && fichaOpt.get().getFormador().getId().equals(formador.getId())) {
@@ -56,7 +58,7 @@ public class FichaController {
     @PostMapping("/editar/{id}")
     public String atualizarFicha(@PathVariable Long id, @ModelAttribute Ficha fichaAtualizada) {
         Optional<Ficha> fichaOpt = fichaService.encontrarFichaPorId(id);
-        Utilizador formador = SecurityUtils.getCurrentUser();
+        Utilizador formador = securityUtils.getCurrentUser();
         
         if (fichaOpt.isPresent() && fichaOpt.get().getFormador().getId().equals(formador.getId())) {
             Ficha fichaExistente = fichaOpt.get();
@@ -71,7 +73,7 @@ public class FichaController {
     @PostMapping("/apagar/{id}")
     public String apagarFicha(@PathVariable Long id) {
         Optional<Ficha> fichaOpt = fichaService.encontrarFichaPorId(id);
-        Utilizador formador = SecurityUtils.getCurrentUser();
+        Utilizador formador = securityUtils.getCurrentUser();
         
         if (fichaOpt.isPresent() && fichaOpt.get().getFormador().getId().equals(formador.getId())) {
             fichaService.apagarFicha(id);

@@ -15,14 +15,16 @@ import java.util.Optional;
 public class PerguntaController {
 
     private final PerguntaService perguntaService;
+    private final SecurityUtils securityUtils;
 
-    public PerguntaController(PerguntaService perguntaService) {
+    public PerguntaController(PerguntaService perguntaService, SecurityUtils securityUtils) {
         this.perguntaService = perguntaService;
+        this.securityUtils = securityUtils;
     }
 
     @GetMapping
     public String listarPerguntas(Model model) {
-        Utilizador formador = SecurityUtils.getCurrentUser();
+        Utilizador formador = securityUtils.getCurrentUser();
         model.addAttribute("perguntas", perguntaService.listarPerguntasDoFormador(formador));
         return "perguntas/lista";
     }
@@ -35,7 +37,7 @@ public class PerguntaController {
 
     @PostMapping("/nova")
     public String salvarNovaPergunta(@ModelAttribute Pergunta pergunta) {
-        Utilizador formador = SecurityUtils.getCurrentUser();
+        Utilizador formador = securityUtils.getCurrentUser();
         perguntaService.guardarPergunta(pergunta, formador);
         return "redirect:/perguntas?sucesso";
     }
@@ -43,7 +45,7 @@ public class PerguntaController {
     @GetMapping("/editar/{id}")
     public String editarPerguntaForm(@PathVariable Long id, Model model) {
         Optional<Pergunta> perguntaOpt = perguntaService.encontrarPerguntaPorId(id);
-        Utilizador formador = SecurityUtils.getCurrentUser();
+        Utilizador formador = securityUtils.getCurrentUser();
         
         if (perguntaOpt.isPresent() && perguntaOpt.get().getFormador().getId().equals(formador.getId())) {
             model.addAttribute("pergunta", perguntaOpt.get());
@@ -55,7 +57,7 @@ public class PerguntaController {
     @PostMapping("/editar/{id}")
     public String atualizarPergunta(@PathVariable Long id, @ModelAttribute Pergunta perguntaAtualizada) {
         Optional<Pergunta> perguntaOpt = perguntaService.encontrarPerguntaPorId(id);
-        Utilizador formador = SecurityUtils.getCurrentUser();
+        Utilizador formador = securityUtils.getCurrentUser();
         
         if (perguntaOpt.isPresent() && perguntaOpt.get().getFormador().getId().equals(formador.getId())) {
             Pergunta perguntaExistente = perguntaOpt.get();
@@ -70,7 +72,7 @@ public class PerguntaController {
     @PostMapping("/apagar/{id}")
     public String apagarPergunta(@PathVariable Long id) {
         Optional<Pergunta> perguntaOpt = perguntaService.encontrarPerguntaPorId(id);
-        Utilizador formador = SecurityUtils.getCurrentUser();
+        Utilizador formador = securityUtils.getCurrentUser();
         
         if (perguntaOpt.isPresent() && perguntaOpt.get().getFormador().getId().equals(formador.getId())) {
             perguntaService.apagarPergunta(id);
