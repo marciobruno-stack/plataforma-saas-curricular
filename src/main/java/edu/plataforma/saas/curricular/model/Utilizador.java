@@ -39,4 +39,12 @@ public class Utilizador {
             this.role = "ROLE_FORMADOR";
         }
     }
+
+    @ManyToMany
+    @JoinTable(
+            name = "utilizador_instituicao",
+            joinColumns = @JoinColumn(name = "utilizador_id"),
+            inverseJoinColumns = @JoinColumn(name = "instituicao_id")
+    )
+    private java.util.List<Instituicao> instituicoes;
 }

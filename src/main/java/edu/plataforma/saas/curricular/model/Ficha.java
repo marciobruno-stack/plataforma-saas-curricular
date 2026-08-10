@@ -29,6 +29,14 @@ public class Ficha {
     )
     private List<Pergunta> perguntas;
 
+    @ManyToMany
+    @JoinTable(
+            name = "ficha_disciplina",
+            joinColumns = @JoinColumn(name = "ficha_id"),
+            inverseJoinColumns = @JoinColumn(name = "disciplina_id")
+    )
+    private List<Disciplina> disciplinasPartilhadas;
+
     public Long getId() {
         return id;
     }
