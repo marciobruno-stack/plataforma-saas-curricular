@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalhes da Instituição - SaaS Curricular</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 0; }
+        .header { background-color: #007bff; color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .header h1 { margin: 0; font-size: 1.5rem; }
+        .header-links a { color: white; text-decoration: none; margin-right: 20px; font-weight: bold; }
+        .container { padding: 2rem; max-width: 1200px; margin: 0 auto; display: flex; gap: 20px; }
+        .sidebar { width: 300px; }
+        .main-content { flex-grow: 1; }
+        .card { background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 1rem; }
+        .code-box { background-color: #e9ecef; padding: 10px; border-radius: 4px; text-align: center; font-size: 1.2rem; font-family: monospace; font-weight: bold; margin-top: 10px; }
+        .form-group { margin-bottom: 1rem; }
+        label { display: block; margin-bottom: 0.5rem; font-weight: bold; font-size: 0.9rem; }
+        input[type="text"] { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        .btn-submit { background-color: #28a745; color: white; padding: 8px 12px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; width: 100%; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #f8f9fa; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div style="display: flex; align-items: center;">
+        <h1 style="margin-right: 30px;">SaaS Curricular</h1>
+        <div class="header-links">
+            <a th:href="@{/dashboard}">Dashboard</a>
+            <a th:href="@{/instituicoes}">Instituições</a>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Barra Lateral -->
+    <div class="sidebar">
+        <div class="card">
+            <h3 th:text="${instituicao.nome}" style="margin-top: 0; color: #007bff;">Escola</h3>
+            <p style="font-size: 0.9rem; color: #666;">Partilha este código com os teus colegas para que se possam juntar a esta instituição:</p>
+            <div class="code-box" th:text="${instituicao.codigoAcesso}">CODIGO</div>
+        </div>
+        
+        <div class="card">
+            <h4 style="margin-top: 0;">Nova Disciplina</h4>
+            <form th:action="@{/instituicoes/{id}/disciplinas/nova(id=${instituicao.id})}" th:object="${novaDisciplina}" method="post">
+                <div class="form-group">
+                    <label>Nome da Disciplina</label>
+                    <input type="text" th:field="*{nome}" required placeholder="Ex: Matemática" />
+                </div>
+                <div class="form-group">
+                    <label>Ano/Nível de Escolaridade</label>
+                    <input type="text" th:field="*{anoEscolaridade}" required placeholder="Ex: 10º Ano" />
+                </div>
+                <button type="submit" class="btn-submit">Criar Disciplina</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Conteúdo Principal -->
+    <div class="main-content">
+        <div class="card">
+            <h2 style="margin-top: 0;">Disciplinas da Instituição</h2>
+            
+            <div th:if="${#lists.isEmpty(instituicao.disciplinas)}">
+                <p style="color: #666; margin-top: 20px;">Esta instituição ainda não tem nenhuma disciplina criada. Usa o formulário ao lado para criar a primeira!</p>
+            </div>
+
+            <table th:unless="${#lists.isEmpty(instituicao.disciplinas)}">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Ano/Nível</th>
+                        <th>Fichas Publicadas</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="disc : ${instituicao.disciplinas}">
+                        <td th:text="${disc.nome}">Matemática</td>
+                        <td th:text="${disc.anoEscolaridade}">10º Ano</td>
+                        <td><span style="background: #e9ecef; padding: 3px 8px; border-radius: 10px; font-size: 0.8rem;" th:text="${#lists.size(disc.fichasPartilhadas)}">0</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

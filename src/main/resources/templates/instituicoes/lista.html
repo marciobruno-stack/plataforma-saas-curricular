@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Minhas Instituições - SaaS Curricular</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 0; }
+        .header { background-color: #007bff; color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .header h1 { margin: 0; font-size: 1.5rem; }
+        .header-links a { color: white; text-decoration: none; margin-right: 20px; font-weight: bold; }
+        .logout-btn { background-color: #dc3545; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; text-decoration: none; font-size: 0.9rem; }
+        .container { padding: 2rem; max-width: 1200px; margin: 0 auto; }
+        .card { background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 1rem; }
+        .btn-primary { background-color: #28a745; color: white; padding: 10px 15px; text-decoration: none; border-radius: 4px; display: inline-block; font-weight: bold; border: none; cursor: pointer; }
+        .btn-secondary { background-color: #17a2b8; color: white; padding: 10px 15px; text-decoration: none; border-radius: 4px; display: inline-block; font-weight: bold; border: none; cursor: pointer; margin-left: 10px; }
+        .btn-view { background-color: #007bff; color: white; padding: 5px 10px; text-decoration: none; border-radius: 4px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #f8f9fa; }
+        .alert-success { background-color: #d4edda; color: #155724; padding: 10px; border-radius: 4px; margin-bottom: 15px; }
+        .alert-error { background-color: #f8d7da; color: #721c24; padding: 10px; border-radius: 4px; margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div style="display: flex; align-items: center;">
+        <h1 style="margin-right: 30px;">SaaS Curricular</h1>
+        <div class="header-links">
+            <a th:href="@{/dashboard}">Dashboard</a>
+            <a th:href="@{/instituicoes}">Instituições</a>
+            <a th:href="@{/fichas}">Fichas</a>
+            <a th:href="@{/perguntas}">Perguntas</a>
+        </div>
+    </div>
+    <div>
+        <span style="margin-right: 15px;" sec:authentication="name">User</span>
+        <form th:action="@{/logout}" method="post" style="display: inline;">
+            <button type="submit" class="logout-btn">Sair</button>
+        </form>
+    </div>
+</div>
+
+<div class="container">
+    <div th:if="${mensagemSucesso}" class="alert-success" th:text="${mensagemSucesso}"></div>
+    <div th:if="${mensagemErro}" class="alert-error" th:text="${mensagemErro}"></div>
+
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h2>Minhas Instituições</h2>
+            <div>
+                <a th:href="@{/instituicoes/nova}" class="btn-primary">+ Criar Escola</a>
+                <a th:href="@{/instituicoes/aderir}" class="btn-secondary">Aderir com Código</a>
+            </div>
+        </div>
+
+        <div th:if="${#lists.isEmpty(instituicoes)}">
+            <p style="color: #666; margin-top: 20px;">Não pertences a nenhuma instituição no momento.</p>
+        </div>
+
+        <table th:unless="${#lists.isEmpty(instituicoes)}">
+            <thead>
+                <tr>
+                    <th>Nome da Escola</th>
+                    <th>Código de Acesso</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="inst : ${instituicoes}">
+                    <td th:text="${inst.nome}">Escola Teste</td>
+                    <td><strong th:text="${inst.codigoAcesso}">CODIGO</strong></td>
+                    <td>
+                        <a th:href="@{/instituicoes/{id}(id=${inst.id})}" class="btn-view">Ver Disciplinas</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</body>
+</html>
