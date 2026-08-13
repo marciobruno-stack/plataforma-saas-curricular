@@ -29,6 +29,7 @@
         <h1 style="margin-right: 30px;">SaaS Curricular</h1>
         <div class="header-links">
             <a th:href="@{/dashboard}">Dashboard</a>
+            <a th:href="@{/instituicoes}">Instituições</a>
             <a th:href="@{/fichas}">Fichas</a>
             <a th:href="@{/perguntas}">Perguntas</a>
         </div>
@@ -67,6 +68,7 @@
                     <td th:text="${ficha.titulo}">Título</td>
                     <td th:text="${ficha.descricao}">Desc</td>
                     <td>
+                        <a th:href="@{/fichas/publicar/{id}(id=${ficha.id})}" class="btn" style="background-color: #28a745; color: white; padding: 0.3rem 0.6rem;">Publicar</a>
                         <a th:href="@{/fichas/editar/{id}(id=${ficha.id})}" class="btn btn-primary" style="padding: 0.3rem 0.6rem;">Editar</a>
                         <form th:action="@{/fichas/apagar/{id}(id=${ficha.id})}" method="post" style="display: inline;" onsubmit="return confirm('Tem a certeza?');">
                             <button type="submit" class="btn btn-danger" style="padding: 0.3rem 0.6rem;">Apagar</button>

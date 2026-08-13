@@ -34,4 +34,34 @@ public class FichaService {
     public void apagarFicha(Long id) {
         fichaRepository.deleteById(id);
     }
+
+    public void publicarFichaNaDisciplina(Long fichaId, edu.plataforma.saas.curricular.model.Disciplina disciplina, Utilizador formador) {
+        Optional<Ficha> fichaOpt = fichaRepository.findById(fichaId);
+        if (fichaOpt.isPresent() && fichaOpt.get().getFormador().getId().equals(formador.getId())) {
+            Ficha ficha = fichaOpt.get();
+            if (!ficha.getDisciplinasPartilhadas().contains(disciplina)) {
+                ficha.getDisciplinasPartilhadas().add(disciplina);
+                fichaRepository.save(ficha);
+            }
+        }
+    }
+
+    public void clonarFicha(Long fichaOriginalId, Utilizador novoDono) {
+        Optional<Ficha> fichaOpt = fichaRepository.findById(fichaOriginalId);
+        if (fichaOpt.isPresent()) {
+            Ficha fichaOriginal = fichaOpt.get();
+            
+            Ficha novaFicha = new Ficha();
+            novaFicha.setTitulo("Cópia de " + fichaOriginal.getTitulo());
+            novaFicha.setDescricao(fichaOriginal.getDescricao());
+            novaFicha.setFormador(novoDono);
+            
+            // Copiar as perguntas (Many-to-Many permite referenciar as mesmas)
+            if (fichaOriginal.getPerguntas() != null) {
+                novaFicha.setPerguntas(new java.util.ArrayList<>(fichaOriginal.getPerguntas()));
+            }
+            
+            fichaRepository.save(novaFicha);
+        }
+    }
 }

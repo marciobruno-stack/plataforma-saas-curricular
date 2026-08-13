@@ -78,7 +78,7 @@
                 </thead>
                 <tbody>
                     <tr th:each="disc : ${instituicao.disciplinas}">
-                        <td th:text="${disc.nome}">Matemática</td>
+                        <td><a th:href="@{/instituicoes/disciplinas/{id}/fichas(id=${disc.id})}" th:text="${disc.nome}" style="font-weight: bold; color: #007bff; text-decoration: none;">Matemática</a></td>
                         <td th:text="${disc.anoEscolaridade}">10º Ano</td>
                         <td><span style="background: #e9ecef; padding: 3px 8px; border-radius: 10px; font-size: 0.8rem;" th:text="${#lists.size(disc.fichasPartilhadas)}">0</span></td>
                     </tr>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Fichas da Disciplina - SaaS Curricular</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 0; }
+        .header { background-color: #007bff; color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .header h1 { margin: 0; font-size: 1.5rem; }
+        .header-links a { color: white; text-decoration: none; margin-right: 20px; font-weight: bold; }
+        .container { padding: 2rem; max-width: 1000px; margin: 0 auto; }
+        .card { background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 1rem; }
+        .btn-clone { background-color: #17a2b8; color: white; padding: 5px 10px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .btn-clone:hover { background-color: #138496; }
+        .btn-back { display: inline-block; margin-bottom: 20px; color: #007bff; text-decoration: none; font-weight: bold; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #f8f9fa; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div style="display: flex; align-items: center;">
+        <h1 style="margin-right: 30px;">SaaS Curricular</h1>
+        <div class="header-links">
+            <a th:href="@{/dashboard}">Dashboard</a>
+            <a th:href="@{/instituicoes}">Instituições</a>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <a th:href="@{/instituicoes/{id}(id=${disciplina.instituicao.id})}" class="btn-back">← Voltar para a Instituição</a>
+
+    <div class="card">
+        <h2 style="margin-top: 0; color: #007bff;">
+            <span th:text="${disciplina.nome}">Disciplina</span> (<span th:text="${disciplina.anoEscolaridade}">Ano</span>)
+        </h2>
+        <p style="color: #666;">Fichas partilhadas publicamente por todos os formadores nesta disciplina.</p>
+
+        <div th:if="${#lists.isEmpty(fichas)}">
+            <p style="color: #666; margin-top: 20px;">Nenhuma ficha foi partilhada nesta disciplina ainda.</p>
+        </div>
+
+        <table th:unless="${#lists.isEmpty(fichas)}">
+            <thead>
+                <tr>
+                    <th>Título</th>
+                    <th>Descrição</th>
+                    <th>Autor Original</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="ficha : ${fichas}">
+                    <td th:text="${ficha.titulo}">Ficha Exemplo</td>
+                    <td th:text="${ficha.descricao}">Descrição</td>
+                    <td><strong th:text="${ficha.formador.nome}">João</strong></td>
+                    <td>
+                        <!-- Botão Clonar -->
+                        <form th:action="@{/fichas/clonar/{id}(id=${ficha.id})}" method="post" style="display: inline;">
+                            <button type="submit" class="btn-clone" title="Copiar para as Minhas Fichas">Clonar</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</body>
+</html>

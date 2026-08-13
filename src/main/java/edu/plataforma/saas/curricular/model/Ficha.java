@@ -76,4 +76,12 @@ public class Ficha {
     public void setPerguntas(List<Pergunta> perguntas) {
         this.perguntas = perguntas;
     }
+
+    public List<Disciplina> getDisciplinasPartilhadas() {
+        return disciplinasPartilhadas;
+    }
+
+    public void setDisciplinasPartilhadas(List<Disciplina> disciplinasPartilhadas) {
+        this.disciplinasPartilhadas = disciplinasPartilhadas;
+    }
 }

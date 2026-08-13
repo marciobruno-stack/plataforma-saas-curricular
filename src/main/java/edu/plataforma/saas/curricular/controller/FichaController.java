@@ -16,10 +16,14 @@ public class FichaController {
 
     private final FichaService fichaService;
     private final SecurityUtils securityUtils;
+    private final edu.plataforma.saas.curricular.service.InstituicaoService instituicaoService;
+    private final edu.plataforma.saas.curricular.repository.DisciplinaRepository disciplinaRepository;
 
-    public FichaController(FichaService fichaService, SecurityUtils securityUtils) {
+    public FichaController(FichaService fichaService, SecurityUtils securityUtils, edu.plataforma.saas.curricular.service.InstituicaoService instituicaoService, edu.plataforma.saas.curricular.repository.DisciplinaRepository disciplinaRepository) {
         this.fichaService = fichaService;
         this.securityUtils = securityUtils;
+        this.instituicaoService = instituicaoService;
+        this.disciplinaRepository = disciplinaRepository;
     }
 
     @GetMapping
@@ -80,5 +84,37 @@ public class FichaController {
             return "redirect:/fichas?apagada";
         }
         return "redirect:/fichas?erro=nao_autorizado";
+    }
+
+    @GetMapping("/publicar/{id}")
+    public String publicarFichaForm(@PathVariable Long id, Model model) {
+        Optional<Ficha> fichaOpt = fichaService.encontrarFichaPorId(id);
+        Utilizador formador = securityUtils.getCurrentUser();
+        
+        if (fichaOpt.isPresent() && fichaOpt.get().getFormador().getId().equals(formador.getId())) {
+            model.addAttribute("ficha", fichaOpt.get());
+            model.addAttribute("instituicoes", instituicaoService.listarInstituicoesDoFormador(formador));
+            return "fichas/publicar";
+        }
+        return "redirect:/fichas?erro=nao_autorizado";
+    }
+
+    @PostMapping("/publicar/{id}")
+    public String publicarFichaSubmit(@PathVariable Long id, @RequestParam Long disciplinaId) {
+        Utilizador formador = securityUtils.getCurrentUser();
+        Optional<edu.plataforma.saas.curricular.model.Disciplina> disciplinaOpt = disciplinaRepository.findById(disciplinaId);
+        
+        if (disciplinaOpt.isPresent()) {
+            fichaService.publicarFichaNaDisciplina(id, disciplinaOpt.get(), formador);
+            return "redirect:/fichas?publicada";
+        }
+        return "redirect:/fichas?erro";
+    }
+
+    @PostMapping("/clonar/{id}")
+    public String clonarFicha(@PathVariable Long id) {
+        Utilizador formador = securityUtils.getCurrentUser();
+        fichaService.clonarFicha(id, formador);
+        return "redirect:/fichas?clonada";
     }
 }
