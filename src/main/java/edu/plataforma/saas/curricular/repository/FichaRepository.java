@@ -11,4 +11,6 @@ import java.util.Optional;
 @Repository
 public interface FichaRepository extends JpaRepository<Ficha, Long> {
     List<Ficha> findByFormador(Utilizador formador);
+    
+    Optional<Ficha> findByCodigoAcessoPublico(String codigoAcessoPublico);
 }

@@ -73,6 +73,16 @@ public class Ficha {
         return perguntas;
     }
 
+    @Column(name = "codigo_acesso_publico", unique = true)
+    private String codigoAcessoPublico;
+
+    @PrePersist
+    public void prePersist() {
+        if (this.codigoAcessoPublico == null) {
+            this.codigoAcessoPublico = java.util.UUID.randomUUID().toString();
+        }
+    }
+
     public void setPerguntas(List<Pergunta> perguntas) {
         this.perguntas = perguntas;
     }
@@ -83,5 +93,13 @@ public class Ficha {
 
     public void setDisciplinasPartilhadas(List<Disciplina> disciplinasPartilhadas) {
         this.disciplinasPartilhadas = disciplinasPartilhadas;
+    }
+
+    public String getCodigoAcessoPublico() {
+        return codigoAcessoPublico;
+    }
+
+    public void setCodigoAcessoPublico(String codigoAcessoPublico) {
+        this.codigoAcessoPublico = codigoAcessoPublico;
     }
 }

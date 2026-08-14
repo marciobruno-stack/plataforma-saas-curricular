@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Resolver Ficha - SaaS Curricular</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 0; display: flex; flex-direction: column; height: 100vh; }
+        .header { background-color: #343a40; color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .header h1 { margin: 0; font-size: 1.2rem; }
+        .timer { font-size: 1.5rem; font-weight: bold; color: #ffc107; font-family: monospace; }
+        
+        .split-container { display: flex; flex-grow: 1; overflow: hidden; }
+        .left-pane { width: 50%; padding: 2rem; background: white; border-right: 2px solid #ddd; overflow-y: auto; }
+        .right-pane { width: 50%; padding: 2rem; background: #f8f9fa; overflow-y: auto; }
+        
+        .question-card { background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 1.5rem; border-left: 4px solid #007bff; }
+        .question-card h3 { margin-top: 0; font-size: 1.1rem; color: #333; }
+        textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 1rem; min-height: 100px; resize: vertical; }
+        
+        .btn-submit { background-color: #28a745; color: white; padding: 15px 20px; border: none; border-radius: 4px; cursor: pointer; font-size: 1.1rem; font-weight: bold; width: 100%; margin-top: 1rem; }
+        .btn-submit:hover { background-color: #218838; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div style="display: flex; align-items: center;">
+        <h1 style="margin-right: 20px;" th:text="${ficha.titulo}">Ficha</h1>
+        <span style="color: #adb5bd; font-size: 0.9rem;">Aluno: <strong style="color:white;" th:text="${nomeAluno}">Nome</strong></span>
+    </div>
+    <div class="timer" id="timerDisplay">00:00:00</div>
+</div>
+
+<div class="split-container">
+    <!-- Lado Esquerdo: Descrição e Apoio -->
+    <div class="left-pane">
+        <h2 style="color: #007bff; border-bottom: 2px solid #007bff; padding-bottom: 10px;">Texto de Apoio / Descrição</h2>
+        <div style="font-size: 1.1rem; line-height: 1.6; color: #444; white-space: pre-wrap;" th:text="${ficha.descricao}">
+            Texto da ficha aqui...
+        </div>
+    </div>
+
+    <!-- Lado Direito: Perguntas a Responder -->
+    <div class="right-pane">
+        <form th:action="@{/aluno/ficha/{codigo}/submeter(codigo=${codigo})}" method="post" id="resolucaoForm">
+            <input type="hidden" name="nomeAluno" th:value="${nomeAluno}">
+            <input type="hidden" name="tempoGastoSegundos" id="tempoGastoSegundos" value="0">
+            
+            <div th:if="${#lists.isEmpty(ficha.perguntas)}">
+                <p>Esta ficha não tem perguntas.</p>
+            </div>
+            
+            <div class="question-card" th:each="pergunta, iterStat : ${ficha.perguntas}">
+                <h3><span th:text="${iterStat.count}">1</span>. <span th:text="${pergunta.enunciado}">Qual é a pergunta?</span></h3>
+                <textarea th:name="'resposta_' + ${pergunta.id}" placeholder="Escreve a tua resposta aqui..." required></textarea>
+            </div>
+            
+            <button type="submit" class="btn-submit" th:unless="${#lists.isEmpty(ficha.perguntas)}">Submeter e Terminar Ficha</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Lógica do Cronómetro em JS Puro
+    const startTime = Date.now();
+    const timerDisplay = document.getElementById('timerDisplay');
+    const tempoInput = document.getElementById('tempoGastoSegundos');
+
+    setInterval(() => {
+        const agora = Date.now();
+        const diffEmSegundos = Math.floor((agora - startTime) / 1000);
+        
+        const horas = String(Math.floor(diffEmSegundos / 3600)).padStart(2, '0');
+        const minutos = String(Math.floor((diffEmSegundos % 3600) / 60)).padStart(2, '0');
+        const segundos = String(diffEmSegundos % 60).padStart(2, '0');
+        
+        timerDisplay.textContent = `${horas}:${minutos}:${segundos}`;
+        tempoInput.value = diffEmSegundos;
+    }, 1000);
+    
+    // Confirmação antes de submeter
+    document.getElementById('resolucaoForm').addEventListener('submit', function(e) {
+        if(!confirm('Tens a certeza que queres submeter a ficha? Não poderás voltar atrás.')) {
+            e.preventDefault();
+        }
+    });
+</script>
+
+</body>
+</html>

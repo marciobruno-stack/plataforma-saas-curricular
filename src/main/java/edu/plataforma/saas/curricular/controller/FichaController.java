@@ -18,12 +18,14 @@ public class FichaController {
     private final SecurityUtils securityUtils;
     private final edu.plataforma.saas.curricular.service.InstituicaoService instituicaoService;
     private final edu.plataforma.saas.curricular.repository.DisciplinaRepository disciplinaRepository;
+    private final edu.plataforma.saas.curricular.service.PortalAlunoService portalAlunoService;
 
-    public FichaController(FichaService fichaService, SecurityUtils securityUtils, edu.plataforma.saas.curricular.service.InstituicaoService instituicaoService, edu.plataforma.saas.curricular.repository.DisciplinaRepository disciplinaRepository) {
+    public FichaController(FichaService fichaService, SecurityUtils securityUtils, edu.plataforma.saas.curricular.service.InstituicaoService instituicaoService, edu.plataforma.saas.curricular.repository.DisciplinaRepository disciplinaRepository, edu.plataforma.saas.curricular.service.PortalAlunoService portalAlunoService) {
         this.fichaService = fichaService;
         this.securityUtils = securityUtils;
         this.instituicaoService = instituicaoService;
         this.disciplinaRepository = disciplinaRepository;
+        this.portalAlunoService = portalAlunoService;
     }
 
     @GetMapping
@@ -116,5 +118,18 @@ public class FichaController {
         Utilizador formador = securityUtils.getCurrentUser();
         fichaService.clonarFicha(id, formador);
         return "redirect:/fichas?clonada";
+    }
+
+    @GetMapping("/{id}/resultados")
+    public String verResultados(@PathVariable Long id, Model model) {
+        Optional<Ficha> fichaOpt = fichaService.encontrarFichaPorId(id);
+        Utilizador formador = securityUtils.getCurrentUser();
+        
+        if (fichaOpt.isPresent() && fichaOpt.get().getFormador().getId().equals(formador.getId())) {
+            model.addAttribute("ficha", fichaOpt.get());
+            model.addAttribute("resolucoes", portalAlunoService.listarResolucoesDaFicha(id));
+            return "fichas/resultados";
+        }
+        return "redirect:/fichas?erro=nao_autorizado";
     }
 }
