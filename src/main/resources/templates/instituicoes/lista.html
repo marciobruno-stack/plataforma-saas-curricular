@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Minhas Instituições - SaaS Curricular</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 0; display: flex; height: 100vh; overflow: hidden; }
         .header { background-color: #007bff; color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
         .header h1 { margin: 0; font-size: 1.5rem; }
         .header-links a { color: white; text-decoration: none; margin-right: 20px; font-weight: bold; }
@@ -23,25 +23,14 @@
 </head>
 <body>
 
-<div class="header">
-    <div style="display: flex; align-items: center;">
-        <h1 style="margin-right: 30px;">SaaS Curricular</h1>
-        <div class="header-links">
-            <a th:href="@{/dashboard}">Dashboard</a>
-            <a th:href="@{/instituicoes}">Instituições</a>
-            <a th:href="@{/fichas}">Fichas</a>
-            <a th:href="@{/perguntas}">Perguntas</a>
-        </div>
-    </div>
-    <div>
-        <span style="margin-right: 15px;" sec:authentication="name">User</span>
-        <form th:action="@{/logout}" method="post" style="display: inline;">
-            <button type="submit" class="logout-btn">Sair</button>
-        </form>
-    </div>
-</div>
 
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+<div style="flex-grow: 1; display: flex; flex-direction: column; overflow: hidden;">
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<div style="flex-grow: 1; overflow-y: auto;">
 <div class="container">
+
     <div th:if="${mensagemSucesso}" class="alert-success" th:text="${mensagemSucesso}"></div>
     <div th:if="${mensagemErro}" class="alert-error" th:text="${mensagemErro}"></div>
 
@@ -79,5 +68,7 @@
     </div>
 </div>
 
+</div>
+</div>
 </body>
 </html>

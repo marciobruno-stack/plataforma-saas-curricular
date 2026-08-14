@@ -10,7 +10,7 @@ public class HomeController {
 
     @GetMapping("/")
     public String home() {
-        return "index"; // Chama o index.html
+        return "redirect:/login";
     }
 
     @GetMapping("/dashboard")

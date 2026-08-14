@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Aderir a Instituição - SaaS Curricular</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 0; display: flex; height: 100vh; overflow: hidden; }
         .header { background-color: #007bff; color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
         .header h1 { margin: 0; font-size: 1.5rem; }
         .header-links a { color: white; text-decoration: none; margin-right: 20px; font-weight: bold; }
@@ -20,17 +20,14 @@
 </head>
 <body>
 
-<div class="header">
-    <div style="display: flex; align-items: center;">
-        <h1 style="margin-right: 30px;">SaaS Curricular</h1>
-        <div class="header-links">
-            <a th:href="@{/dashboard}">Dashboard</a>
-            <a th:href="@{/instituicoes}">Instituições</a>
-        </div>
-    </div>
-</div>
 
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+<div style="flex-grow: 1; display: flex; flex-direction: column; overflow: hidden;">
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<div style="flex-grow: 1; overflow-y: auto;">
 <div class="container">
+
     <div class="card">
         <h2 style="margin-top: 0;">Aderir a uma Instituição</h2>
         <p style="color: #666; margin-bottom: 20px;">Se um colega já criou a Escola na plataforma, pede-lhe o <strong>Código de Acesso</strong> único e insere-o abaixo para entrares.</p>
@@ -47,5 +44,7 @@
     </div>
 </div>
 
+</div>
+</div>
 </body>
 </html>
