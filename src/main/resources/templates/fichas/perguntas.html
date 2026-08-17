@@ -7,9 +7,9 @@
 
 <div layout:fragment="content">
     <div class="card">
-        <h2 style="margin-top: 0;">Perguntas da Ficha: <span th:text="${ficha.titulo}"></span></h2>
+        <h2 class="mt-0">Perguntas da Ficha: <span class="text-primary" th:text="${ficha.titulo}"></span></h2>
         
-        <h3 style="margin-top: 30px;">Perguntas Incluídas</h3>
+        <h3 class="mt-4">Perguntas Incluídas</h3>
         <table th:if="${!ficha.perguntas.isEmpty()}">
             <thead>
                 <tr>
@@ -23,23 +23,22 @@
                     <td th:text="${pergunta.enunciado}">Enunciado</td>
                     <td th:text="${pergunta.tipo}">Tipo</td>
                     <td>
-                        <form th:action="@{/fichas/{id}/perguntas/{perguntaId}(id=${ficha.id}, perguntaId=${pergunta.id})}" method="post" style="display: inline;" onsubmit="return confirm('Tem a certeza que deseja remover esta pergunta da ficha?');">
+                        <form th:action="@{/fichas/{id}/perguntas/{perguntaId}(id=${ficha.id}, perguntaId=${pergunta.id})}" method="post" class="inline-form" onsubmit="return confirm('Tem a certeza que deseja remover esta pergunta da ficha?');">
                             <input type="hidden" name="_method" value="delete" />
-                            <button type="submit" class="btn btn-danger" style="padding: 0.3rem 0.6rem;">Remover</button>
+                            <button type="submit" class="btn btn-danger btn-sm">Remover</button>
                         </form>
                     </td>
                 </tr>
             </tbody>
         </table>
-        <p th:if="${ficha.perguntas.isEmpty()}" style="color: #666;">Ainda não existem perguntas nesta ficha.</p>
+        <p th:if="${ficha.perguntas.isEmpty()}" class="text-muted">Ainda não existem perguntas nesta ficha.</p>
 
-        <h3 style="margin-top: 30px;">Adicionar Pergunta Existente</h3>
+        <h3 class="mt-4">Adicionar Pergunta Existente</h3>
         <form th:action="@{/fichas/{id}/perguntas(id=${ficha.id})}" method="post">
             <div class="form-group">
                 <label for="perguntaId">Escolhe uma pergunta:</label>
                 <select id="perguntaId" name="perguntaId" required>
                     <option value="" disabled selected>-- Seleciona uma pergunta --</option>
-                    <!-- Filtra as perguntas que já estão na ficha -->
                     <option th:each="pergunta : ${todasPerguntas}" 
                             th:if="${!ficha.perguntas.contains(pergunta)}"
                             th:value="${pergunta.id}" 

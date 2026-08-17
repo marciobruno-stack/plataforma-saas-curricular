@@ -1,42 +1,44 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/base}">
 <head>
-    <title>Resultados da Ficha - SaaS Curricular</title>
+    <title>Resultados - SaaS Curricular</title>
 </head>
 <body>
 
 <div layout:fragment="content">
-    <a th:href="@{/fichas}" class="btn-back">← Voltar às Minhas Fichas</a>
-
-            <div class="card">
-                <h2 style="margin-top: 0;">Resultados da Ficha: <span style="color: #007bff;" th:text="${ficha.titulo}">Título</span></h2>
-                <p style="color: #666;">Abaixo encontras todos os alunos que já resolveram esta ficha através do link público.</p>
-
-                <div th:if="${#lists.isEmpty(resolucoes)}">
-                    <p style="color: #666; margin-top: 20px;">Ainda não há resoluções para esta ficha.</p>
+    <div class="card">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 class="mt-0">Resultados da Ficha: <span class="text-primary" th:text="${ficha.titulo}">Título</span></h2>
+            <a th:href="@{/fichas}" class="btn btn-secondary">Voltar às Fichas</a>
+        </div>
+        
+        <p class="text-muted mb-4">Abaixo encontras todos os alunos que já resolveram esta ficha através do link público.</p>
+        
+        <div th:if="${#lists.isEmpty(resolucoes)}">
+            <p class="text-muted mt-3">Ainda não há resoluções para esta ficha.</p>
+        </div>
+        
+        <div th:each="resolucao : ${resolucoes}" class="mb-3">
+            <details>
+                <summary>
+                    <span style="display: inline-block; width: 300px;" th:text="${resolucao.nomeAluno}">João Silva</span>
+                    <span class="text-muted" style="display: inline-block; width: 200px;">
+                        <span th:text="${#temporals.format(resolucao.dataResolucao, 'dd/MM/yyyy HH:mm')}">Data</span>
+                    </span>
+                    <span class="text-success" style="display: inline-block; width: 150px;">
+                        <span th:text="${resolucao.tempoGastoSegundos / 60}">0</span>m <span th:text="${resolucao.tempoGastoSegundos % 60}">0</span>s
+                    </span>
+                </summary>
+                
+                <div class="details-content mt-3">
+                    <div th:each="resposta : ${resolucao.respostas}" class="mb-3">
+                        <div class="answer-title font-weight-bold" th:text="${resposta.pergunta.enunciado}">Pergunta</div>
+                        <div class="answer-box mt-2" th:text="${resposta.textoResposta}" style="background: #f8f9fa; padding: 10px; border-radius: 4px; border-left: 3px solid #007bff;">Resposta do aluno...</div>
+                    </div>
                 </div>
-
-                <div th:each="resolucao : ${resolucoes}" style="margin-bottom: 15px;">
-                    <details>
-                        <summary>
-                            <span style="display: inline-block; width: 300px;" th:text="${resolucao.nomeAluno}">João Silva</span>
-                            <span style="display: inline-block; width: 200px; color: #666;">
-                                <span th:text="${#temporals.format(resolucao.dataResolucao, 'dd/MM/yyyy HH:mm')}">Data</span>
-                            </span>
-                            <span style="display: inline-block; width: 150px; color: #28a745;">
-                                <span th:text="${resolucao.tempoGastoSegundos / 60}">0</span>m <span th:text="${resolucao.tempoGastoSegundos % 60}">0</span>s
-                            </span>
-                        </summary>
-                        
-                        <div class="details-content">
-                            <div th:each="resposta : ${resolucao.respostas}" style="margin-bottom: 15px;">
-                                <div class="answer-title" th:text="${resposta.pergunta.enunciado}">Pergunta</div>
-                                <div class="answer-box" th:text="${resposta.textoResposta}">Resposta do aluno...</div>
-                            </div>
-                        </div>
-                    </details>
-                </div>
-            </div>
+            </details>
+        </div>
+    </div>
 </div>
 
 </body>

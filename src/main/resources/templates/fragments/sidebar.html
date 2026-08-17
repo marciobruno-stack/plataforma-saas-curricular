@@ -1,23 +1,23 @@
 <!-- Fragmento da Barra Lateral Slim (Estilo Discord/Slack) -->
-<div th:fragment="sidebar" style="width: 70px; background-color: #1E1F22; display: flex; flex-direction: column; align-items: center; padding-top: 15px; flex-shrink: 0; overflow-y: auto; gap: 12px; border-right: 1px solid #111;">
+<div th:fragment="sidebar" class="sidebar">
     
     <!-- Home / Dashboard -->
-    <a th:href="@{/dashboard}" style="width: 48px; height: 48px; background-color: #313338; color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; text-decoration: none; font-size: 1.2rem; transition: 0.2s;" onmouseover="this.style.borderRadius='16px'; this.style.backgroundColor='#5865F2'" onmouseout="this.style.borderRadius='50%'; this.style.backgroundColor='#313338'" title="Dashboard">
+    <a th:href="@{/dashboard}" class="sidebar-item" title="Dashboard">
         🏠
     </a>
 
     <!-- Divisor -->
-    <div style="width: 32px; height: 2px; background-color: #35363C; border-radius: 1px;"></div>
+    <div class="sidebar-divider"></div>
     
     <!-- Instituições (Bolinhas) -->
-    <div th:each="inst : ${minhasInstituicoesGlobais}">
-        <a th:href="@{/instituicoes/{id}(id=${inst.id})}" style="width: 48px; height: 48px; background-color: #313338; color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; text-decoration: none; font-size: 1.2rem; font-weight: bold; transition: 0.2s;" onmouseover="this.style.borderRadius='16px'; this.style.backgroundColor='#23A559'" onmouseout="this.style.borderRadius='50%'; this.style.backgroundColor='#313338'" th:title="${inst.nome}" th:text="${#strings.substring(inst.nome,0,1)}">
+    <div th:each="inst : ${minhasInstituicoes}">
+        <a th:href="@{/instituicoes/{id}(id=${inst.id})}" class="sidebar-item inst-item" th:title="${inst.nome}" th:text="${#strings.substring(inst.nome,0,1)}">
             A
         </a>
     </div>
     
     <!-- Adicionar Nova Instituição -->
-    <a th:href="@{/instituicoes/aderir}" style="width: 48px; height: 48px; background-color: transparent; color: #23A559; border: 1px dashed #23A559; border-radius: 50%; display: flex; justify-content: center; align-items: center; text-decoration: none; font-size: 1.5rem; transition: 0.2s;" onmouseover="this.style.borderRadius='16px'; this.style.backgroundColor='#23A559'; this.style.color='white'" onmouseout="this.style.borderRadius='50%'; this.style.backgroundColor='transparent'; this.style.color='#23A559'" title="Aderir ou Criar Instituição">
+    <a th:href="@{/instituicoes/aderir}" class="sidebar-add" title="Aderir ou Criar Instituição">
         +
     </a>
 </div>

@@ -1,16 +1,16 @@
-<!-- Fragmento da Barra Superior (Navbar) -->
-<div th:fragment="navbar" class="header" style="background-color: #007bff; color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-    <div style="display: flex; align-items: center;">
-        <h1 style="margin-right: 30px; margin-top: 0; margin-bottom: 0; font-size: 1.5rem;">SaaS Curricular</h1>
+<!-- Fragmento da Barra de Navegação -->
+<div th:fragment="navbar" class="header">
+    <div class="d-flex align-items-center">
+        <h1 class="navbar-brand mr-4">SaaS Curricular</h1>
         <div class="header-links">
-            <a th:href="@{/fichas}" style="color: white; text-decoration: none; margin-right: 20px; font-weight: bold;">Fichas</a>
-            <a th:href="@{/perguntas}" style="color: white; text-decoration: none; margin-right: 20px; font-weight: bold;">Perguntas</a>
+            <a th:href="@{/fichas}" class="navbar-link mr-3">Fichas</a>
+            <a th:href="@{/perguntas}" class="navbar-link">Perguntas</a>
         </div>
     </div>
-    <div>
-        <span sec:authentication="name" style="margin-right: 15px;">User</span>
-        <form th:action="@{/logout}" method="post" style="display: inline;">
-            <button type="submit" class="btn btn-danger" style="background-color: #dc3545; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight: bold;">Sair</button>
+    <div class="d-flex align-items-center">
+        <span sec:authentication="name" class="mr-3 text-white">User</span>
+        <form th:action="@{/logout}" method="post" class="mb-0">
+            <button type="submit" class="logout-btn">Sair</button>
         </form>
     </div>
 </div>
