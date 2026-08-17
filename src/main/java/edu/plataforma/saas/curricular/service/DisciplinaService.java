@@ -14,12 +14,12 @@ public class DisciplinaService {
     @Autowired
     private DisciplinaRepository disciplinaRepository;
 
-    public Disciplina criarDisciplina(Disciplina disciplina, Instituicao instituicao) {
+    public Disciplina criar(Disciplina disciplina, Instituicao instituicao) {
         disciplina.setInstituicao(instituicao);
         return disciplinaRepository.save(disciplina);
     }
 
-    public List<Disciplina> listarDisciplinasDaInstituicao(Long instituicaoId) {
+    public List<Disciplina> listarPorInstituicao(Long instituicaoId) {
         return disciplinaRepository.findByInstituicaoId(instituicaoId);
     }
 }

@@ -1,37 +1,11 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/base}">
 <head>
-    <meta charset="UTF-8">
     <title>Detalhes da Instituição - SaaS Curricular</title>
-    <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 0; display: flex; height: 100vh; overflow: hidden; }
-        .header { background-color: #007bff; color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
-        .header h1 { margin: 0; font-size: 1.5rem; }
-        .header-links a { color: white; text-decoration: none; margin-right: 20px; font-weight: bold; }
-        .container { padding: 2rem; max-width: 1200px; margin: 0 auto; display: flex; gap: 20px; }
-        .sidebar { width: 300px; }
-        .main-content { flex-grow: 1; }
-        .card { background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 1rem; }
-        .code-box { background-color: #e9ecef; padding: 10px; border-radius: 4px; text-align: center; font-size: 1.2rem; font-family: monospace; font-weight: bold; margin-top: 10px; }
-        .form-group { margin-bottom: 1rem; }
-        label { display: block; margin-bottom: 0.5rem; font-weight: bold; font-size: 0.9rem; }
-        input[type="text"] { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-        .btn-submit { background-color: #28a745; color: white; padding: 8px 12px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; width: 100%; }
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
-        th { background-color: #f8f9fa; }
-    </style>
 </head>
 <body>
 
-
-<div th:replace="~{fragments/sidebar :: sidebar}"></div>
-
-<div style="flex-grow: 1; display: flex; flex-direction: column; overflow: hidden;">
-<div th:replace="~{fragments/navbar :: navbar}"></div>
-<div style="flex-grow: 1; overflow-y: auto;">
-<div class="container">
-
+<div layout:fragment="content">
     <!-- Barra Lateral -->
     <div class="sidebar">
         <div class="card">
@@ -42,7 +16,7 @@
         
         <div class="card">
             <h4 style="margin-top: 0;">Nova Disciplina</h4>
-            <form th:action="@{/instituicoes/{id}/disciplinas/nova(id=${instituicao.id})}" th:object="${novaDisciplina}" method="post">
+            <form th:action="@{/instituicoes/{id}/disciplinas(id=${instituicao.id})}" th:object="${novaDisciplina}" method="post">
                 <div class="form-group">
                     <label>Nome da Disciplina</label>
                     <input type="text" th:field="*{nome}" required placeholder="Ex: Matemática" />
@@ -85,7 +59,5 @@
     </div>
 </div>
 
-</div>
-</div>
 </body>
 </html>

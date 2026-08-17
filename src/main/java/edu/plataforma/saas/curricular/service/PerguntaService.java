@@ -3,6 +3,7 @@ package edu.plataforma.saas.curricular.service;
 import edu.plataforma.saas.curricular.model.Pergunta;
 import edu.plataforma.saas.curricular.model.Utilizador;
 import edu.plataforma.saas.curricular.repository.PerguntaRepository;
+import edu.plataforma.saas.curricular.security.SecurityUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,25 +13,34 @@ import java.util.Optional;
 public class PerguntaService {
 
     private final PerguntaRepository perguntaRepository;
+    private final SecurityUtils securityUtils;
 
-    public PerguntaService(PerguntaRepository perguntaRepository) {
+    public PerguntaService(PerguntaRepository perguntaRepository, SecurityUtils securityUtils) {
         this.perguntaRepository = perguntaRepository;
+        this.securityUtils = securityUtils;
     }
 
-    public Pergunta guardarPergunta(Pergunta pergunta, Utilizador formador) {
+    public Pergunta guardar(Pergunta pergunta) {
+        Utilizador formador = securityUtils.getCurrentUser();
         pergunta.setFormador(formador);
         return perguntaRepository.save(pergunta);
     }
 
-    public List<Pergunta> listarPerguntasDoFormador(Utilizador formador) {
+    public List<Pergunta> listar() {
+        Utilizador formador = securityUtils.getCurrentUser();
         return perguntaRepository.findByFormador(formador);
     }
 
-    public Optional<Pergunta> encontrarPerguntaPorId(Long id) {
+    public Optional<Pergunta> encontrarPorId(Long id) {
         return perguntaRepository.findById(id);
     }
 
-    public void apagarPergunta(Long id) {
-        perguntaRepository.deleteById(id);
+    public void apagar(Long id) {
+        Optional<Pergunta> perguntaOpt = perguntaRepository.findById(id);
+        Utilizador formador = securityUtils.getCurrentUser();
+        
+        if (perguntaOpt.isPresent() && perguntaOpt.get().getFormador().getId().equals(formador.getId())) {
+            perguntaRepository.deleteById(id);
+        }
     }
 }

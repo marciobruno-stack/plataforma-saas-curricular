@@ -1,37 +1,16 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/base}">
 <head>
-    <meta charset="UTF-8">
     <title>Gerir Pergunta - SaaS Curricular</title>
-    <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 0; display: flex; height: 100vh; overflow: hidden; }
-        .header { background-color: #007bff; color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
-        .header h1 { margin: 0; font-size: 1.5rem; }
-        .header-links a { color: white; text-decoration: none; margin-right: 20px; font-weight: bold; }
-        .container { padding: 2rem; max-width: 600px; margin: 0 auto; }
-        .card { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .form-group { margin-bottom: 1.5rem; }
-        label { display: block; margin-bottom: .5rem; font-weight: bold; }
-        input[type="text"], textarea, select { width: 100%; padding: .5rem; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
-        .btn { padding: 0.75rem 1.5rem; border-radius: 4px; cursor: pointer; text-decoration: none; font-size: 1rem; border: none; display: inline-block; }
-        .btn-success { background-color: #28a745; color: white; }
-        .btn-secondary { background-color: #6c757d; color: white; margin-left: 10px; }
-    </style>
 </head>
 <body>
 
-
-<div th:replace="~{fragments/sidebar :: sidebar}"></div>
-
-<div style="flex-grow: 1; display: flex; flex-direction: column; overflow: hidden;">
-<div th:replace="~{fragments/navbar :: navbar}"></div>
-<div style="flex-grow: 1; overflow-y: auto;">
-<div class="container">
-
+<div layout:fragment="content">
     <div class="card">
         <h2 th:text="${pergunta.id == null ? 'Nova Pergunta' : 'Editar Pergunta'}">Nova Pergunta</h2>
         
-        <form th:action="@{${pergunta.id == null ? '/perguntas/nova' : '/perguntas/editar/' + pergunta.id}}" th:object="${pergunta}" method="post">
+        <form th:action="@{${pergunta.id == null ? '/perguntas' : '/perguntas/' + pergunta.id}}" th:object="${pergunta}" method="post">
+            <input type="hidden" name="_method" value="put" th:if="${pergunta.id != null}" />
             <div class="form-group">
                 <label>Enunciado da Pergunta:</label>
                 <textarea th:field="*{enunciado}" rows="5" required autofocus></textarea>
@@ -52,7 +31,5 @@
     </div>
 </div>
 
-</div>
-</div>
 </body>
 </html>

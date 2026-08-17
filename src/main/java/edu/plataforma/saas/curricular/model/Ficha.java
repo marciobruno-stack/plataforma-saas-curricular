@@ -37,6 +37,24 @@ public class Ficha {
     )
     private List<Disciplina> disciplinasPartilhadas;
 
+    public Ficha() {
+    }
+
+    public Ficha(String titulo, String descricao, Utilizador formador) {
+        this.titulo = titulo;
+        this.descricao = descricao;
+        this.formador = formador;
+    }
+
+    public Ficha(Ficha original, Utilizador novoDono) {
+        this.titulo = "Cópia de " + original.getTitulo();
+        this.descricao = original.getDescricao();
+        this.formador = novoDono;
+        if (original.getPerguntas() != null) {
+            this.perguntas = new java.util.ArrayList<>(original.getPerguntas());
+        }
+    }
+
     public Long getId() {
         return id;
     }

@@ -26,6 +26,15 @@ public class Pergunta {
     @Column(nullable = false)
     private String tipo;
 
+    public Pergunta() {
+    }
+
+    public Pergunta(String enunciado, Utilizador formador, String tipo) {
+        this.enunciado = enunciado;
+        this.formador = formador;
+        this.tipo = tipo;
+    }
+
     public Long getId() {
         return id;
     }

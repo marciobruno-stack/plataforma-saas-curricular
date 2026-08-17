@@ -2,8 +2,6 @@ package edu.plataforma.saas.curricular.controller;
 
 import edu.plataforma.saas.curricular.model.Disciplina;
 import edu.plataforma.saas.curricular.model.Instituicao;
-import edu.plataforma.saas.curricular.model.Utilizador;
-import edu.plataforma.saas.curricular.security.SecurityUtils;
 import edu.plataforma.saas.curricular.service.DisciplinaService;
 import edu.plataforma.saas.curricular.service.InstituicaoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,23 +23,12 @@ public class DisciplinaController {
     @Autowired
     private InstituicaoService instituicaoService;
 
-    @Autowired
-    private SecurityUtils securityUtils;
-
-    @PostMapping("/nova")
+    @PostMapping
     public String criarDisciplina(@PathVariable Long instituicaoId, @ModelAttribute Disciplina disciplina) {
-        Utilizador formador = securityUtils.getCurrentUser();
-        Optional<Instituicao> instituicaoOpt = instituicaoService.encontrarPorId(instituicaoId);
+        Optional<Instituicao> instituicaoOpt = instituicaoService.encontrar(instituicaoId);
 
         if (instituicaoOpt.isPresent()) {
-            Instituicao instituicao = instituicaoOpt.get();
-            // Verificar segurança: apenas formadores da escola podem criar disciplinas
-            boolean temAcesso = instituicao.getFormadores().stream()
-                    .anyMatch(f -> f.getId().equals(formador.getId()));
-
-            if (temAcesso) {
-                disciplinaService.criarDisciplina(disciplina, instituicao);
-            }
+            disciplinaService.criar(disciplina, instituicaoOpt.get());
         }
 
         return "redirect:/instituicoes/" + instituicaoId;

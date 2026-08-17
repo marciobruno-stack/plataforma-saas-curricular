@@ -5,6 +5,7 @@ import edu.plataforma.saas.curricular.model.Utilizador;
 import edu.plataforma.saas.curricular.security.SecurityUtils;
 import edu.plataforma.saas.curricular.service.InstituicaoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
@@ -20,16 +21,11 @@ public class GlobalModelAdvice {
     @Autowired
     private InstituicaoService instituicaoService;
 
-    @ModelAttribute("minhasInstituicoesGlobais")
-    public List<Instituicao> globalInstituicoes() {
-        try {
-            Utilizador currentUser = securityUtils.getCurrentUser();
-            if (currentUser != null) {
-                return instituicaoService.listarInstituicoesDoFormador(currentUser);
-            }
-        } catch (Exception e) {
-            // Ignorar para requests não autenticados (ex: /login, /aluno/**)
+    @ModelAttribute("minhasInstituicoes")
+    public List<Instituicao> minhasInstituicoes(Authentication authentication) {
+        if (authentication != null && authentication.isAuthenticated()) {
+            return instituicaoService.listar();
         }
-        return new ArrayList<>();
+        return List.of();
     }
 }

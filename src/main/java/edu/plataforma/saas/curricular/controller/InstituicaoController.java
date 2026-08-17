@@ -2,8 +2,6 @@ package edu.plataforma.saas.curricular.controller;
 
 import edu.plataforma.saas.curricular.model.Disciplina;
 import edu.plataforma.saas.curricular.model.Instituicao;
-import edu.plataforma.saas.curricular.model.Utilizador;
-import edu.plataforma.saas.curricular.security.SecurityUtils;
 import edu.plataforma.saas.curricular.service.DisciplinaService;
 import edu.plataforma.saas.curricular.service.InstituicaoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,13 +23,9 @@ public class InstituicaoController {
     @Autowired
     private DisciplinaService disciplinaService;
 
-    @Autowired
-    private SecurityUtils securityUtils;
-
     @GetMapping
     public String listarInstituicoes(Model model) {
-        Utilizador formador = securityUtils.getCurrentUser();
-        List<Instituicao> instituicoes = instituicaoService.listarInstituicoesDoFormador(formador);
+        List<Instituicao> instituicoes = instituicaoService.listar();
         model.addAttribute("instituicoes", instituicoes);
         return "instituicoes/lista";
     }
@@ -42,10 +36,9 @@ public class InstituicaoController {
         return "instituicoes/form";
     }
 
-    @PostMapping("/nova")
+    @PostMapping
     public String criarInstituicao(@ModelAttribute Instituicao instituicao) {
-        Utilizador formador = securityUtils.getCurrentUser();
-        instituicaoService.criarInstituicao(instituicao, formador);
+        instituicaoService.criar(instituicao);
         return "redirect:/instituicoes";
     }
 
@@ -56,8 +49,7 @@ public class InstituicaoController {
 
     @PostMapping("/aderir")
     public String aderirInstituicao(@RequestParam String codigoAcesso, RedirectAttributes redirectAttributes) {
-        Utilizador formador = securityUtils.getCurrentUser();
-        boolean sucesso = instituicaoService.aderirAInstituicao(codigoAcesso, formador);
+        boolean sucesso = instituicaoService.aderir(codigoAcesso);
         
         if (sucesso) {
             redirectAttributes.addFlashAttribute("mensagemSucesso", "Aderiu à Instituição com sucesso!");
@@ -70,20 +62,12 @@ public class InstituicaoController {
 
     @GetMapping("/{id}")
     public String verInstituicao(@PathVariable Long id, Model model) {
-        Utilizador formador = securityUtils.getCurrentUser();
-        Optional<Instituicao> instituicaoOpt = instituicaoService.encontrarPorId(id);
+        Optional<Instituicao> instituicaoOpt = instituicaoService.encontrar(id);
         
         if (instituicaoOpt.isPresent()) {
-            Instituicao instituicao = instituicaoOpt.get();
-            // Verificar se o formador tem acesso a esta instituição
-            boolean temAcesso = instituicao.getFormadores().stream()
-                    .anyMatch(f -> f.getId().equals(formador.getId()));
-                    
-            if (temAcesso) {
-                model.addAttribute("instituicao", instituicao);
-                model.addAttribute("novaDisciplina", new Disciplina());
-                return "instituicoes/detalhe";
-            }
+            model.addAttribute("instituicao", instituicaoOpt.get());
+            model.addAttribute("novaDisciplina", new Disciplina());
+            return "instituicoes/detalhe";
         }
         
         return "redirect:/instituicoes";

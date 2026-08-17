@@ -28,7 +28,7 @@ public class PortalAlunoController {
     // 1. Landing Page (Insere o Nome)
     @GetMapping("/{codigo}")
     public String landingPage(@PathVariable String codigo, Model model) {
-        Optional<Ficha> fichaOpt = portalAlunoService.encontrarFichaPorCodigoPublico(codigo);
+        Optional<Ficha> fichaOpt = portalAlunoService.encontrarPorCodigoPublico(codigo);
         
         if (fichaOpt.isPresent()) {
             model.addAttribute("ficha", fichaOpt.get());
@@ -41,7 +41,7 @@ public class PortalAlunoController {
     // 2. Interface de Resolução (Split-Screen)
     @PostMapping("/{codigo}/iniciar")
     public String iniciarResolucao(@PathVariable String codigo, @RequestParam String nomeAluno, Model model) {
-        Optional<Ficha> fichaOpt = portalAlunoService.encontrarFichaPorCodigoPublico(codigo);
+        Optional<Ficha> fichaOpt = portalAlunoService.encontrarPorCodigoPublico(codigo);
         
         if (fichaOpt.isPresent()) {
             model.addAttribute("ficha", fichaOpt.get());

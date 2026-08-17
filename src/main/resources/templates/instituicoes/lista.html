@@ -1,36 +1,11 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/base}">
 <head>
-    <meta charset="UTF-8">
     <title>Minhas Instituições - SaaS Curricular</title>
-    <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 0; display: flex; height: 100vh; overflow: hidden; }
-        .header { background-color: #007bff; color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
-        .header h1 { margin: 0; font-size: 1.5rem; }
-        .header-links a { color: white; text-decoration: none; margin-right: 20px; font-weight: bold; }
-        .logout-btn { background-color: #dc3545; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; text-decoration: none; font-size: 0.9rem; }
-        .container { padding: 2rem; max-width: 1200px; margin: 0 auto; }
-        .card { background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 1rem; }
-        .btn-primary { background-color: #28a745; color: white; padding: 10px 15px; text-decoration: none; border-radius: 4px; display: inline-block; font-weight: bold; border: none; cursor: pointer; }
-        .btn-secondary { background-color: #17a2b8; color: white; padding: 10px 15px; text-decoration: none; border-radius: 4px; display: inline-block; font-weight: bold; border: none; cursor: pointer; margin-left: 10px; }
-        .btn-view { background-color: #007bff; color: white; padding: 5px 10px; text-decoration: none; border-radius: 4px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
-        th { background-color: #f8f9fa; }
-        .alert-success { background-color: #d4edda; color: #155724; padding: 10px; border-radius: 4px; margin-bottom: 15px; }
-        .alert-error { background-color: #f8d7da; color: #721c24; padding: 10px; border-radius: 4px; margin-bottom: 15px; }
-    </style>
 </head>
 <body>
 
-
-<div th:replace="~{fragments/sidebar :: sidebar}"></div>
-
-<div style="flex-grow: 1; display: flex; flex-direction: column; overflow: hidden;">
-<div th:replace="~{fragments/navbar :: navbar}"></div>
-<div style="flex-grow: 1; overflow-y: auto;">
-<div class="container">
-
+<div layout:fragment="content">
     <div th:if="${mensagemSucesso}" class="alert-success" th:text="${mensagemSucesso}"></div>
     <div th:if="${mensagemErro}" class="alert-error" th:text="${mensagemErro}"></div>
 
@@ -68,7 +43,5 @@
     </div>
 </div>
 
-</div>
-</div>
 </body>
 </html>

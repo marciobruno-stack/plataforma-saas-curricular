@@ -22,7 +22,7 @@ public class PortalAlunoService {
     @Autowired
     private ResolucaoFichaRepository resolucaoRepository;
 
-    public Optional<Ficha> encontrarFichaPorCodigoPublico(String codigo) {
+    public Optional<Ficha> encontrarPorCodigoPublico(String codigo) {
         return fichaRepository.findByCodigoAcessoPublico(codigo);
     }
 
@@ -50,7 +50,7 @@ public class PortalAlunoService {
         throw new RuntimeException("Ficha não encontrada");
     }
 
-    public List<ResolucaoFicha> listarResolucoesDaFicha(Long fichaId) {
+    public List<ResolucaoFicha> listarResolucoes(Long fichaId) {
         return resolucaoRepository.findByFichaIdOrderByDataResolucaoDesc(fichaId);
     }
 }
