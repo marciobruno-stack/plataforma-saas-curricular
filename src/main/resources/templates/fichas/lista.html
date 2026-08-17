@@ -30,6 +30,7 @@
                         
                         <a th:href="@{/fichas/{id}/perguntas(id=${ficha.id})}" class="btn btn-warning btn-sm">Perguntas</a>
                         <a th:href="@{/fichas/{id}/resultados(id=${ficha.id})}" class="btn btn-info btn-sm">Resultados</a>
+                        <a th:href="@{/fichas/{id}/exportar/pdf(id=${ficha.id})}" class="btn btn-sm" style="background-color: #dc3545; color: white; border: none; padding: 0.3rem 0.6rem; border-radius: 4px; text-decoration: none;" target="_blank">Exportar PDF</a>
                         
                         <a th:href="@{/fichas/publicar/{id}(id=${ficha.id})}" class="btn btn-success btn-sm">Publicar</a>
                         <a th:href="@{/fichas/editar/{id}(id=${ficha.id})}" class="btn btn-primary btn-sm">Editar</a>

@@ -7,7 +7,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
-
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import edu.plataforma.saas.curricular.service.PdfExportService;
 @Controller
 @RequestMapping("/fichas")
 public class FichaController {
@@ -18,19 +21,22 @@ public class FichaController {
     private final edu.plataforma.saas.curricular.service.PortalAlunoService portalAlunoService;
     private final edu.plataforma.saas.curricular.service.PerguntaService perguntaService;
     private final edu.plataforma.saas.curricular.repository.PerguntaRepository perguntaRepository;
+    private final PdfExportService pdfExportService;
 
     public FichaController(FichaService fichaService, 
                            edu.plataforma.saas.curricular.service.InstituicaoService instituicaoService, 
                            edu.plataforma.saas.curricular.repository.DisciplinaRepository disciplinaRepository, 
                            edu.plataforma.saas.curricular.service.PortalAlunoService portalAlunoService,
                            edu.plataforma.saas.curricular.service.PerguntaService perguntaService,
-                           edu.plataforma.saas.curricular.repository.PerguntaRepository perguntaRepository) {
+                           edu.plataforma.saas.curricular.repository.PerguntaRepository perguntaRepository,
+                           PdfExportService pdfExportService) {
         this.fichaService = fichaService;
         this.instituicaoService = instituicaoService;
         this.disciplinaRepository = disciplinaRepository;
         this.portalAlunoService = portalAlunoService;
         this.perguntaService = perguntaService;
         this.perguntaRepository = perguntaRepository;
+        this.pdfExportService = pdfExportService;
     }
 
     @GetMapping
@@ -166,5 +172,23 @@ public class FichaController {
             return "redirect:/fichas/" + id + "/perguntas?removida";
         }
         return "redirect:/fichas/" + id + "/perguntas?erro";
+    }
+
+    @GetMapping("/{id}/exportar/pdf")
+    public ResponseEntity<byte[]> exportarPdf(@PathVariable Long id) {
+        Optional<Ficha> fichaOpt = fichaService.encontrarPorId(id);
+        if (fichaOpt.isPresent()) {
+            Ficha ficha = fichaOpt.get();
+            byte[] pdfBytes = pdfExportService.exportarFichaParaPdf(ficha);
+            
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_PDF);
+            headers.setContentDispositionFormData("attachment", "ficha_" + id + ".pdf");
+            
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .body(pdfBytes);
+        }
+        return ResponseEntity.notFound().build();
     }
 }
