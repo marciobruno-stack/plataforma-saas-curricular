@@ -5,56 +5,58 @@
 </head>
 <body>
 
-<div layout:fragment="content">
-    <!-- Barra Lateral -->
-    <div class="sidebar">
-        <div class="card">
-            <h3 th:text="${instituicao.nome}" style="margin-top: 0; color: #007bff;">Escola</h3>
-            <p style="font-size: 0.9rem; color: #666;">Partilha este código com os teus colegas para que se possam juntar a esta instituição:</p>
-            <div class="code-box" th:text="${instituicao.codigoAcesso}">CODIGO</div>
-        </div>
-        
-        <div class="card">
-            <h4 style="margin-top: 0;">Nova Disciplina</h4>
-            <form th:action="@{/instituicoes/{id}/disciplinas(id=${instituicao.id})}" th:object="${novaDisciplina}" method="post">
-                <div class="form-group">
-                    <label>Nome da Disciplina</label>
-                    <input type="text" th:field="*{nome}" required placeholder="Ex: Matemática" />
-                </div>
-                <div class="form-group">
-                    <label>Ano/Nível de Escolaridade</label>
-                    <input type="text" th:field="*{anoEscolaridade}" required placeholder="Ex: 10º Ano" />
-                </div>
-                <button type="submit" class="btn-submit">Criar Disciplina</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Conteúdo Principal -->
-    <div class="main-content">
-        <div class="card">
-            <h2 style="margin-top: 0;">Disciplinas da Instituição</h2>
-            
-            <div th:if="${#lists.isEmpty(instituicao.disciplinas)}">
-                <p style="color: #666; margin-top: 20px;">Esta instituição ainda não tem nenhuma disciplina criada. Usa o formulário ao lado para criar a primeira!</p>
+<div layout:fragment="content" class="content-wrapper">
+    <div class="content-area d-flex" style="gap: 2rem; padding: 20px;">
+        <!-- Painel Esquerdo -->
+        <div style="width: 300px; flex-shrink: 0;">
+            <div class="card mb-4">
+                <h3 th:text="${instituicao.nome}" class="mt-0 text-primary">Escola</h3>
+                <p class="text-muted" style="font-size: 0.9rem;">Partilha este código com os teus colegas para que se possam juntar a esta instituição:</p>
+                <div style="background: #e9ecef; padding: 10px; font-family: monospace; font-size: 1.2rem; text-align: center; font-weight: bold; border-radius: 4px;" th:text="${instituicao.codigoAcesso}">CODIGO</div>
             </div>
+            
+            <div class="card">
+                <h4 class="mt-0">Nova Disciplina</h4>
+                <form th:action="@{/instituicoes/{id}/disciplinas(id=${instituicao.id})}" th:object="${novaDisciplina}" method="post">
+                    <div class="form-group">
+                        <label>Nome da Disciplina</label>
+                        <input type="text" th:field="*{nome}" required placeholder="Ex: Matemática" />
+                    </div>
+                    <div class="form-group">
+                        <label>Ano/Nível de Escolaridade</label>
+                        <input type="text" th:field="*{anoEscolaridade}" required placeholder="Ex: 10º Ano" />
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Criar Disciplina</button>
+                </form>
+            </div>
+        </div>
 
-            <table th:unless="${#lists.isEmpty(instituicao.disciplinas)}">
-                <thead>
-                    <tr>
-                        <th>Nome</th>
-                        <th>Ano/Nível</th>
-                        <th>Fichas Publicadas</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="disc : ${instituicao.disciplinas}">
-                        <td><a th:href="@{/instituicoes/disciplinas/{id}/fichas(id=${disc.id})}" th:text="${disc.nome}" style="font-weight: bold; color: #007bff; text-decoration: none;">Matemática</a></td>
-                        <td th:text="${disc.anoEscolaridade}">10º Ano</td>
-                        <td><span style="background: #e9ecef; padding: 3px 8px; border-radius: 10px; font-size: 0.8rem;" th:text="${#lists.size(disc.fichasPartilhadas)}">0</span></td>
-                    </tr>
-                </tbody>
-            </table>
+        <!-- Conteúdo Principal -->
+        <div class="flex-grow-1">
+            <div class="card">
+                <h2 class="mt-0">Disciplinas da Instituição</h2>
+                
+                <div th:if="${instituicao.disciplinas.isEmpty()}">
+                    <p class="text-muted mt-4">Esta instituição ainda não tem nenhuma disciplina criada. Usa o formulário ao lado para criar a primeira!</p>
+                </div>
+
+                <table th:unless="${instituicao.disciplinas.isEmpty()}">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Ano/Nível</th>
+                            <th>Fichas Publicadas</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="disc : ${instituicao.disciplinas}">
+                            <td><a th:href="@{/instituicoes/disciplinas/{id}/fichas(id=${disc.id})}" th:text="${disc.nome}" style="font-weight: bold; color: #007bff; text-decoration: none;">Matemática</a></td>
+                            <td th:text="${disc.anoEscolaridade}">10º Ano</td>
+                            <td><span style="background: #e9ecef; padding: 3px 8px; border-radius: 10px; font-size: 0.8rem;" th:text="${disc.fichasPartilhadas.size()}">0</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
