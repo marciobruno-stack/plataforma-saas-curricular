@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/base}">
+<head>
+    <title>Importar do Moodle - SaaS Curricular</title>
+</head>
+<body>
+
+<div layout:fragment="content" class="content-wrapper">
+    <div class="content-area">
+        <div class="card" style="max-width: 600px; margin: 0 auto; margin-top: 2rem;">
+            <h2 class="mt-0 text-primary">Importar do Moodle</h2>
+            <p class="text-muted">Faz o upload de um ficheiro XML exportado diretamente do Moodle (Moodle XML format).</p>
+            
+            <div th:if="${param.erro != null and param.erro[0] == 'ficheiro_vazio'}" style="color: #dc3545; background-color: #f8d7da; padding: 10px; border-radius: 4px; margin-bottom: 1rem;">
+                Por favor, seleciona um ficheiro XML antes de submeter.
+            </div>
+            
+            <div th:if="${param.erro != null and param.erro[0] == 'formato_invalido'}" style="color: #dc3545; background-color: #f8d7da; padding: 10px; border-radius: 4px; margin-bottom: 1rem;">
+                Ocorreu um erro ao processar o ficheiro. Certifica-te de que é um ficheiro Moodle XML válido.
+            </div>
+
+            <form th:action="@{/perguntas/importar}" method="post" enctype="multipart/form-data">
+                <div class="form-group mb-4">
+                    <label for="file">Ficheiro XML do Moodle</label>
+                    <input type="file" id="file" name="file" accept=".xml" required style="display: block; width: 100%; padding: 10px; border: 1px dashed #007bff; border-radius: 4px; background-color: #f8f9fa; cursor: pointer;">
+                </div>
+                
+                <div style="background-color: #e9ecef; padding: 15px; border-radius: 4px; margin-bottom: 1.5rem; font-size: 0.9rem;">
+                    <h4 class="mt-0 mb-2">Nota sobre a Importação:</h4>
+                    <ul class="mb-0 text-muted" style="padding-left: 20px;">
+                        <li>São suportados os tipos: Múltipla Escolha, Verdadeiro/Falso, Desenvolvimento, Resposta Curta, Numérica e Associação.</li>
+                        <li>Nesta versão, apenas o <strong>Enunciado</strong> e o <strong>Tipo</strong> são importados para o banco de dados.</li>
+                        <li>Imagens e opções (A, B, C) serão ignoradas temporariamente.</li>
+                    </ul>
+                </div>
+                
+                <div class="d-flex justify-content-between align-items-center">
+                    <a th:href="@{/perguntas}" class="btn btn-secondary">Cancelar</a>
+                    <button type="submit" class="btn btn-primary">Iniciar Importação</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

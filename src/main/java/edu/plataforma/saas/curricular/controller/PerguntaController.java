@@ -7,15 +7,19 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
-
+import java.util.List;
+import org.springframework.web.multipart.MultipartFile;
+import edu.plataforma.saas.curricular.service.MoodleXmlParserService;
 @Controller
 @RequestMapping("/perguntas")
 public class PerguntaController {
 
     private final PerguntaService perguntaService;
+    private final MoodleXmlParserService moodleXmlParserService;
 
-    public PerguntaController(PerguntaService perguntaService) {
+    public PerguntaController(PerguntaService perguntaService, MoodleXmlParserService moodleXmlParserService) {
         this.perguntaService = perguntaService;
+        this.moodleXmlParserService = moodleXmlParserService;
     }
 
     @GetMapping
@@ -69,5 +73,29 @@ public class PerguntaController {
     public String apagarPergunta(@PathVariable Long id) {
         perguntaService.apagar(id);
         return "redirect:/perguntas?apagada";
+    }
+
+    @GetMapping("/importar")
+    public String importarMoodleForm() {
+        return "perguntas/importar";
+    }
+
+    @PostMapping("/importar")
+    public String importarMoodleSubmit(@RequestParam("file") MultipartFile file) {
+        if (file.isEmpty()) {
+            return "redirect:/perguntas/importar?erro=ficheiro_vazio";
+        }
+        
+        try {
+            List<Pergunta> perguntasExtraidas = moodleXmlParserService.parseMoodleXml(file.getInputStream());
+            
+            for (Pergunta p : perguntasExtraidas) {
+                perguntaService.guardar(p);
+            }
+            
+            return "redirect:/perguntas?importadas=" + perguntasExtraidas.size();
+        } catch (Exception e) {
+            return "redirect:/perguntas/importar?erro=formato_invalido";
+        }
     }
 }

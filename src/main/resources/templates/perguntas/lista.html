@@ -6,14 +6,25 @@
 <body>
 
 <div layout:fragment="content">
-    <div class="card">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h2>Banco de Perguntas</h2>
-            <a th:href="@{/perguntas/nova}" class="btn btn-success">Nova Pergunta</a>
+    <div class="content-area">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mt-0 mb-0">As Minhas Perguntas</h2>
+            <div>
+                <a th:href="@{/perguntas/importar}" class="btn btn-secondary mr-2" style="background-color: #f39c12; color: white; border: none;">Importar do Moodle</a>
+                <a th:href="@{/perguntas/nova}" class="btn btn-primary">Nova Pergunta</a>
+            </div>
         </div>
 
-        <div th:if="${param.sucesso}" class="alert alert-success">Operação concluída com sucesso!</div>
-        <div th:if="${param.apagada}" class="alert alert-success">Pergunta apagada com sucesso.</div>
+        <div th:if="${param.sucesso}" class="alert-success">
+            Pergunta guardada com sucesso!
+        </div>
+        
+        <div th:if="${param.importadas}" class="alert-success" th:text="'Foram importadas ' + ${param.importadas[0]} + ' perguntas do Moodle com sucesso!'">
+        </div>
+
+        <div th:if="${param.apagada}" class="alert-success">
+            Pergunta apagada!
+        </div>
         <div th:if="${param.erro}" class="alert alert-danger">Erro: Operação não autorizada.</div>
 
         <table>
