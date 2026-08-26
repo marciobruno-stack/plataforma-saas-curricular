@@ -25,8 +25,12 @@ public class Disciplina {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "instituicao_id", nullable = false)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Instituicao instituicao;
 
     @ManyToMany(mappedBy = "disciplinasPartilhadas")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<Ficha> fichasPartilhadas;
 }

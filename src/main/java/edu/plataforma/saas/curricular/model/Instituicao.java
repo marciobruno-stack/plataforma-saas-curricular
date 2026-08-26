@@ -24,9 +24,13 @@ public class Instituicao {
     private String codigoAcesso;
 
     @OneToMany(mappedBy = "instituicao", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<Disciplina> disciplinas;
 
     @ManyToMany(mappedBy = "instituicoes")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<Utilizador> formadores;
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -36,6 +40,8 @@ public class Instituicao {
         inverseJoinColumns = @JoinColumn(name = "utilizador_id")
     )
     @Builder.Default
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<Utilizador> administradores = new java.util.ArrayList<>();
 
     public boolean isAdministrador(Utilizador user) {

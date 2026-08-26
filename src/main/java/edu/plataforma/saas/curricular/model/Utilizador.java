@@ -46,5 +46,7 @@ public class Utilizador {
             joinColumns = @JoinColumn(name = "utilizador_id"),
             inverseJoinColumns = @JoinColumn(name = "instituicao_id")
     )
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private java.util.List<Instituicao> instituicoes;
 }
