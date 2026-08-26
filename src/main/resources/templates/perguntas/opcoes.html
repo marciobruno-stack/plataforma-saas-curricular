@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/base}">
+<head>
+    <title>Opções de Resposta - SaaS Curricular</title>
+</head>
+<body>
+
+<div layout:fragment="content">
+    <div class="card">
+        <div class="mb-3" style="font-size: 0.95rem;">
+            <a th:href="@{/perguntas}" style="color: #007bff; text-decoration: none;">Perguntas</a> 
+            <span class="text-muted mx-2">/</span> 
+            <strong>Opções de Resposta</strong>
+        </div>
+        <h2 class="mt-0">Opções: <span class="text-muted" th:text="${pergunta.enunciado}"></span></h2>
+        
+        <h3 class="mt-4">Opções Registadas</h3>
+        <table th:if="${!pergunta.opcoes.isEmpty()}">
+            <thead>
+                <tr>
+                    <th>Texto da Opção</th>
+                    <th>Correta?</th>
+                    <th style="width: 150px;">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="opcao : ${pergunta.opcoes}">
+                    <td th:text="${opcao.texto}">Opção</td>
+                    <td>
+                        <span th:if="${opcao.correta}" class="text-success" style="font-weight: bold;">Sim</span>
+                        <span th:unless="${opcao.correta}" class="text-danger">Não</span>
+                    </td>
+                    <td>
+                        <form th:action="@{/perguntas/{id}/opcoes/{opcaoId}(id=${pergunta.id}, opcaoId=${opcao.id})}" method="post" class="inline-form" onsubmit="return confirm('Tem a certeza que deseja remover esta opção?');">
+                            <input type="hidden" name="_method" value="delete" />
+                            <button type="submit" class="btn btn-danger btn-sm">Remover</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <p th:if="${pergunta.opcoes.isEmpty()}" class="text-muted">Ainda não existem opções registadas para esta pergunta.</p>
+
+        <hr class="mt-4 mb-4">
+
+        <h3 class="mt-0">Adicionar Nova Opção</h3>
+        <form th:action="@{/perguntas/{id}/opcoes(id=${pergunta.id})}" method="post">
+            <div class="form-group">
+                <label for="texto">Texto da Opção:</label>
+                <input type="text" id="texto" name="texto" required autofocus>
+            </div>
+            
+            <div class="form-group" style="display: flex; align-items: center; gap: 10px;">
+                <input type="checkbox" id="correta" name="correta" value="true" style="width: auto;">
+                <label for="correta" style="margin-bottom: 0;">Esta é a opção correta</label>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Adicionar Opção</button>
+            <a th:href="@{/perguntas}" class="btn btn-secondary">Voltar às Perguntas</a>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

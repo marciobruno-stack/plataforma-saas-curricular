@@ -6,11 +6,18 @@
 <body>
 
 <div layout:fragment="content" class="content-wrapper">
+        <div class="d-flex justify-content-between align-items-center mb-4" style="width: 100%;">
+            <h2 class="mt-0 mb-0" th:text="${instituicao.nome}">Nome da Instituição</h2>
+            <div>
+                <a th:href="@{/instituicoes/{id}/administradores(id=${instituicao.id})}" class="btn btn-warning mr-2" style="padding: 0.5rem 1rem;">Gerir Administradores</a>
+                <a th:href="@{/instituicoes}" class="btn btn-secondary" style="padding: 0.5rem 1rem;">Voltar</a>
+            </div>
+        </div>
+        
     <div class="content-area d-flex" style="gap: 2rem; padding: 20px;">
         <!-- Painel Esquerdo -->
         <div style="width: 300px; flex-shrink: 0;">
             <div class="card mb-4">
-                <h3 th:text="${instituicao.nome}" class="mt-0 text-primary">Escola</h3>
                 <p class="text-muted" style="font-size: 0.9rem;">Partilha este código com os teus colegas para que se possam juntar a esta instituição:</p>
                 <div style="background: #e9ecef; padding: 10px; font-family: monospace; font-size: 1.2rem; text-align: center; font-weight: bold; border-radius: 4px;" th:text="${instituicao.codigoAcesso}">CODIGO</div>
             </div>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/base}">
+<head>
+    <title>Administradores - SaaS Curricular</title>
+</head>
+<body>
+
+<div layout:fragment="content">
+    <div class="card">
+        <div class="mb-3" style="font-size: 0.95rem;">
+            <a th:href="@{/instituicoes}" style="color: #007bff; text-decoration: none;">Instituições</a> 
+            <span class="text-muted mx-2">/</span>
+            <a th:href="@{/instituicoes/{id}(id=${instituicao.id})}" style="color: #007bff; text-decoration: none;" th:text="${instituicao.nome}"></a> 
+            <span class="text-muted mx-2">/</span>
+            <strong>Administradores</strong>
+        </div>
+        
+        <h2 class="mt-0">Gestão de Administradores</h2>
+        <p class="text-muted">Utilizadores com permissão para editar disciplinas e gerir esta instituição.</p>
+
+        <div th:if="${mensagemSucesso}" class="alert-success" th:text="${mensagemSucesso}"></div>
+        <div th:if="${mensagemErro}" class="alert-danger" th:text="${mensagemErro}" style="background-color: #f8d7da; color: #721c24; padding: 1rem; border-radius: 4px; margin-bottom: 1rem; border: 1px solid #f5c6cb;"></div>
+
+        <h3 class="mt-4">Administradores Atuais</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>E-mail</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="admin : ${instituicao.administradores}">
+                    <td th:text="${admin.nome}">Nome</td>
+                    <td th:text="${admin.email}">E-mail</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <hr class="mt-4 mb-4">
+
+        <h3 class="mt-0">Convidar Administrador</h3>
+        <form th:action="@{/instituicoes/{id}/administradores(id=${instituicao.id})}" method="post">
+            <div class="form-group">
+                <label for="email">E-mail do utilizador (já deve estar registado):</label>
+                <input type="email" id="email" name="email" required placeholder="exemplo@email.com">
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Adicionar Administrador</button>
+            <a th:href="@{/instituicoes/{id}(id=${instituicao.id})}" class="btn btn-secondary">Voltar à Instituição</a>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

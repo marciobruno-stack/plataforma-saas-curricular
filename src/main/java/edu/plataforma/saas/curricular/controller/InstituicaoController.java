@@ -72,4 +72,27 @@ public class InstituicaoController {
         
         return "redirect:/instituicoes";
     }
+
+    @GetMapping("/{id}/administradores")
+    public String gerirAdministradores(@PathVariable Long id, Model model) {
+        Optional<Instituicao> instituicaoOpt = instituicaoService.encontrar(id);
+        
+        if (instituicaoOpt.isPresent()) {
+            model.addAttribute("instituicao", instituicaoOpt.get());
+            return "instituicoes/administradores";
+        }
+        
+        return "redirect:/instituicoes";
+    }
+
+    @PostMapping("/{id}/administradores")
+    public String adicionarAdministrador(@PathVariable Long id, @RequestParam String email, RedirectAttributes redirectAttributes) {
+        boolean sucesso = instituicaoService.adicionarAdministrador(id, email);
+        if (sucesso) {
+            redirectAttributes.addFlashAttribute("mensagemSucesso", "Administrador adicionado com sucesso!");
+        } else {
+            redirectAttributes.addFlashAttribute("mensagemErro", "Erro ao adicionar administrador. Verifique se o e-mail está correto e registado.");
+        }
+        return "redirect:/instituicoes/" + id + "/administradores";
+    }
 }

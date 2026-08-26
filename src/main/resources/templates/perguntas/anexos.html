@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/base}">
+<head>
+    <title>Anexos da Pergunta - SaaS Curricular</title>
+</head>
+<body>
+
+<div layout:fragment="content">
+    <div class="card">
+        <div class="mb-3" style="font-size: 0.95rem;">
+            <a th:href="@{/perguntas}" style="color: #007bff; text-decoration: none;">Perguntas</a> 
+            <span class="text-muted mx-2">/</span> 
+            <strong>Anexos da Pergunta</strong>
+        </div>
+        <h2 class="mt-0">Anexos: <span class="text-muted" th:text="${pergunta.enunciado}"></span></h2>
+        
+        <h3 class="mt-4">Ficheiros Anexados</h3>
+        <div th:if="${!pergunta.anexos.isEmpty()}" style="display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 2rem;">
+            <div th:each="anexo : ${pergunta.anexos}" style="border: 1px solid #ddd; padding: 10px; border-radius: 6px; width: 200px; text-align: center;">
+                
+                <div th:if="${anexo.tipoConteudo != null and anexo.tipoConteudo.startsWith('image/')}">
+                    <img th:src="@{'/uploads/perguntas/' + ${anexo.caminhoServidor}}" alt="Anexo" style="max-width: 100%; height: auto; border-radius: 4px; margin-bottom: 10px;">
+                </div>
+                
+                <div th:if="${anexo.tipoConteudo != null and anexo.tipoConteudo.startsWith('video/')}">
+                    <video width="100%" controls style="margin-bottom: 10px; border-radius: 4px;">
+                        <source th:src="@{'/uploads/perguntas/' + ${anexo.caminhoServidor}}" th:type="${anexo.tipoConteudo}">
+                        O seu browser não suporta vídeo.
+                    </video>
+                </div>
+                
+                <p class="text-muted" th:text="${anexo.nomeOriginal}" style="font-size: 0.85rem; word-break: break-all;"></p>
+                
+                <form th:action="@{/perguntas/{id}/anexos/{anexoId}(id=${pergunta.id}, anexoId=${anexo.id})}" method="post" onsubmit="return confirm('Tem a certeza que deseja remover este anexo?');">
+                    <input type="hidden" name="_method" value="delete" />
+                    <button type="submit" class="btn btn-danger btn-sm" style="width: 100%;">🗑️ Remover</button>
+                </form>
+            </div>
+        </div>
+        
+        <p th:if="${pergunta.anexos.isEmpty()}" class="text-muted">Ainda não existem imagens ou vídeos anexados a esta pergunta.</p>
+
+        <hr class="mt-4 mb-4">
+
+        <h3 class="mt-0">Adicionar Novo Anexo (Imagem/Vídeo)</h3>
+        <form th:action="@{/perguntas/{id}/anexos(id=${pergunta.id})}" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="file">Selecionar Ficheiro:</label>
+                <input type="file" id="file" name="file" accept="image/*,video/*" required style="display: block; width: 100%; padding: 10px; border: 1px dashed #007bff; border-radius: 4px; background-color: #f8f9fa; cursor: pointer;">
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Fazer Upload</button>
+            <a th:href="@{/perguntas}" class="btn btn-secondary">Voltar às Perguntas</a>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

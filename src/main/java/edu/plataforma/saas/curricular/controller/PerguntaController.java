@@ -10,16 +10,21 @@ import java.util.Optional;
 import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 import edu.plataforma.saas.curricular.service.MoodleXmlParserService;
+import edu.plataforma.saas.curricular.service.FileUploadService;
 @Controller
 @RequestMapping("/perguntas")
 public class PerguntaController {
 
     private final PerguntaService perguntaService;
     private final MoodleXmlParserService moodleXmlParserService;
+    private final FileUploadService fileUploadService;
 
-    public PerguntaController(PerguntaService perguntaService, MoodleXmlParserService moodleXmlParserService) {
+    public PerguntaController(PerguntaService perguntaService, 
+                              MoodleXmlParserService moodleXmlParserService,
+                              FileUploadService fileUploadService) {
         this.perguntaService = perguntaService;
         this.moodleXmlParserService = moodleXmlParserService;
+        this.fileUploadService = fileUploadService;
     }
 
     @GetMapping
@@ -97,5 +102,58 @@ public class PerguntaController {
         } catch (Exception e) {
             return "redirect:/perguntas/importar?erro=formato_invalido";
         }
+    }
+
+    @GetMapping("/{id}/opcoes")
+    public String gerirOpcoesForm(@PathVariable Long id, Model model) {
+        Optional<Pergunta> perguntaOpt = perguntaService.encontrarPorId(id);
+        if (perguntaOpt.isPresent()) {
+            model.addAttribute("pergunta", perguntaOpt.get());
+            return "perguntas/opcoes";
+        }
+        return "redirect:/perguntas?erro=nao_encontrado";
+    }
+
+    @PostMapping("/{id}/opcoes")
+    public String adicionarOpcaoSubmit(@PathVariable Long id, @RequestParam String texto, @RequestParam(required = false) boolean correta) {
+        perguntaService.adicionarOpcao(id, texto, correta);
+        return "redirect:/perguntas/" + id + "/opcoes?sucesso";
+    }
+
+    @DeleteMapping("/{id}/opcoes/{opcaoId}")
+    public String removerOpcaoSubmit(@PathVariable Long id, @PathVariable Long opcaoId) {
+        perguntaService.removerOpcao(id, opcaoId);
+        return "redirect:/perguntas/" + id + "/opcoes?removida";
+    }
+
+    @GetMapping("/{id}/anexos")
+    public String gerirAnexosForm(@PathVariable Long id, Model model) {
+        Optional<Pergunta> perguntaOpt = perguntaService.encontrarPorId(id);
+        if (perguntaOpt.isPresent()) {
+            model.addAttribute("pergunta", perguntaOpt.get());
+            return "perguntas/anexos";
+        }
+        return "redirect:/perguntas?erro=nao_encontrado";
+    }
+
+    @PostMapping("/{id}/anexos")
+    public String adicionarAnexoSubmit(@PathVariable Long id, @RequestParam("file") MultipartFile file) {
+        if (file.isEmpty()) {
+            return "redirect:/perguntas/" + id + "/anexos?erro=vazio";
+        }
+        try {
+            String fileName = fileUploadService.salvarFicheiro("uploads/perguntas", file);
+            perguntaService.adicionarAnexo(id, file.getOriginalFilename(), fileName, file.getContentType());
+            return "redirect:/perguntas/" + id + "/anexos?sucesso";
+        } catch (Exception e) {
+            return "redirect:/perguntas/" + id + "/anexos?erro=falha";
+        }
+    }
+
+    @DeleteMapping("/{id}/anexos/{anexoId}")
+    public String removerAnexoSubmit(@PathVariable Long id, @PathVariable Long anexoId) {
+        // Opção para apagar fisicamente o ficheiro: fileUploadService.apagarFicheiro("uploads/perguntas", fileName);
+        perguntaService.removerAnexo(id, anexoId);
+        return "redirect:/perguntas/" + id + "/anexos?removida";
     }
 }

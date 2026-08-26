@@ -26,6 +26,12 @@ public class Pergunta {
     @Column(nullable = false)
     private String tipo;
 
+    @OneToMany(mappedBy = "pergunta", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OpcaoResposta> opcoes = new java.util.ArrayList<>();
+
+    @OneToMany(mappedBy = "pergunta", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<AnexoPergunta> anexos = new java.util.ArrayList<>();
+
     public Pergunta() {
     }
 
@@ -83,5 +89,21 @@ public class Pergunta {
             case "VERDADEIRO_FALSO" -> "Verdadeiro / Falso";
             default -> tipo;
         };
+    }
+
+    public List<OpcaoResposta> getOpcoes() {
+        return opcoes;
+    }
+
+    public void setOpcoes(List<OpcaoResposta> opcoes) {
+        this.opcoes = opcoes;
+    }
+
+    public List<AnexoPergunta> getAnexos() {
+        return anexos;
+    }
+
+    public void setAnexos(List<AnexoPergunta> anexos) {
+        this.anexos = anexos;
     }
 }

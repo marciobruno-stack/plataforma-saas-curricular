@@ -34,8 +34,11 @@ public class InstituicaoService {
         
         Instituicao novaInstituicao = instituicaoRepository.save(instituicao);
         
-        // Adicionar o formador que criou à lista de membros da instituição
+        // Adicionar o formador que criou à lista de membros da instituição e administradores
         criador.getInstituicoes().add(novaInstituicao);
+        novaInstituicao.getAdministradores().add(criador);
+        
+        instituicaoRepository.save(novaInstituicao);
         utilizadorRepository.save(criador);
         
         return novaInstituicao;
@@ -83,5 +86,37 @@ public class InstituicaoService {
     // For internal usage where access check isn't needed or is done differently
     public Optional<Instituicao> encontrarPorId(Long id) {
         return instituicaoRepository.findById(id);
+    }
+
+    @Transactional
+    public boolean adicionarAdministrador(Long instituicaoId, String email) {
+        Utilizador currentUser = securityUtils.getCurrentUser();
+        Optional<Instituicao> instOpt = instituicaoRepository.findById(instituicaoId);
+        
+        if (instOpt.isPresent()) {
+            Instituicao inst = instOpt.get();
+            // Só quem já é administrador pode adicionar outro
+            if (inst.isAdministrador(currentUser)) {
+                Optional<Utilizador> novoAdminOpt = utilizadorRepository.findByEmail(email);
+                if (novoAdminOpt.isPresent()) {
+                    Utilizador novoAdmin = novoAdminOpt.get();
+                    if (!inst.isAdministrador(novoAdmin)) {
+                        inst.getAdministradores().add(novoAdmin);
+                        
+                        // Também garantir que o utilizador faz parte da instituição (formadores)
+                        boolean jaPertence = novoAdmin.getInstituicoes().stream()
+                                .anyMatch(i -> i.getId().equals(inst.getId()));
+                        if (!jaPertence) {
+                            novoAdmin.getInstituicoes().add(inst);
+                            utilizadorRepository.save(novoAdmin);
+                        }
+                        
+                        instituicaoRepository.save(inst);
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 }

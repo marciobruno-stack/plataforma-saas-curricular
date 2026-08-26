@@ -28,4 +28,18 @@ public class Instituicao {
 
     @ManyToMany(mappedBy = "instituicoes")
     private List<Utilizador> formadores;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "instituicao_administradores",
+        joinColumns = @JoinColumn(name = "instituicao_id"),
+        inverseJoinColumns = @JoinColumn(name = "utilizador_id")
+    )
+    @Builder.Default
+    private List<Utilizador> administradores = new java.util.ArrayList<>();
+
+    public boolean isAdministrador(Utilizador user) {
+        if (administradores == null || user == null) return false;
+        return administradores.stream().anyMatch(a -> a.getId().equals(user.getId()));
+    }
 }

@@ -43,4 +43,50 @@ public class PerguntaService {
             perguntaRepository.deleteById(id);
         }
     }
+
+    public void adicionarOpcao(Long perguntaId, String texto, boolean correta) {
+        Optional<Pergunta> perguntaOpt = perguntaRepository.findById(perguntaId);
+        Utilizador formador = securityUtils.getCurrentUser();
+
+        if (perguntaOpt.isPresent() && perguntaOpt.get().getFormador().getId().equals(formador.getId())) {
+            Pergunta pergunta = perguntaOpt.get();
+            edu.plataforma.saas.curricular.model.OpcaoResposta opcao = new edu.plataforma.saas.curricular.model.OpcaoResposta(texto, correta, pergunta);
+            pergunta.getOpcoes().add(opcao);
+            perguntaRepository.save(pergunta);
+        }
+    }
+
+    public void removerOpcao(Long perguntaId, Long opcaoId) {
+        Optional<Pergunta> perguntaOpt = perguntaRepository.findById(perguntaId);
+        Utilizador formador = securityUtils.getCurrentUser();
+
+        if (perguntaOpt.isPresent() && perguntaOpt.get().getFormador().getId().equals(formador.getId())) {
+            Pergunta pergunta = perguntaOpt.get();
+            pergunta.getOpcoes().removeIf(o -> o.getId().equals(opcaoId));
+            perguntaRepository.save(pergunta);
+        }
+    }
+
+    public void adicionarAnexo(Long perguntaId, String nomeOriginal, String caminhoServidor, String tipoConteudo) {
+        Optional<Pergunta> perguntaOpt = perguntaRepository.findById(perguntaId);
+        Utilizador formador = securityUtils.getCurrentUser();
+
+        if (perguntaOpt.isPresent() && perguntaOpt.get().getFormador().getId().equals(formador.getId())) {
+            Pergunta pergunta = perguntaOpt.get();
+            edu.plataforma.saas.curricular.model.AnexoPergunta anexo = new edu.plataforma.saas.curricular.model.AnexoPergunta(nomeOriginal, caminhoServidor, tipoConteudo, pergunta);
+            pergunta.getAnexos().add(anexo);
+            perguntaRepository.save(pergunta);
+        }
+    }
+
+    public void removerAnexo(Long perguntaId, Long anexoId) {
+        Optional<Pergunta> perguntaOpt = perguntaRepository.findById(perguntaId);
+        Utilizador formador = securityUtils.getCurrentUser();
+
+        if (perguntaOpt.isPresent() && perguntaOpt.get().getFormador().getId().equals(formador.getId())) {
+            Pergunta pergunta = perguntaOpt.get();
+            pergunta.getAnexos().removeIf(a -> a.getId().equals(anexoId));
+            perguntaRepository.save(pergunta);
+        }
+    }
 }

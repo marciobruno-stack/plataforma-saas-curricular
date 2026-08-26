@@ -29,6 +29,10 @@
         .border-bottom-primary { border-bottom: 2px solid #007bff; }
         .pb-2 { padding-bottom: 0.5rem; }
         .split-screen-text { font-size: 1.1rem; line-height: 1.6; color: #444; white-space: pre-wrap; }
+        
+        .radio-option { display: block; margin-bottom: 10px; padding: 10px; border: 1px solid #eee; border-radius: 4px; cursor: pointer; transition: background 0.2s; }
+        .radio-option:hover { background: #f0f8ff; }
+        .radio-option input { margin-right: 10px; }
     </style>
 </head>
 <body>
@@ -38,21 +42,61 @@
         <h1 class="mr-4 mt-0 mb-0" th:text="${ficha.titulo}">Ficha</h1>
         <span style="color: #adb5bd; font-size: 0.9rem;">Aluno: <strong class="text-white" th:text="${nomeAluno}">Nome</strong></span>
     </div>
-    <div id="timer" style="font-size: 1.2rem; font-weight: bold; font-family: monospace;">00:00</div>
+    <div id="timerDisplay" style="font-size: 1.2rem; font-weight: bold; font-family: monospace;">00:00:00</div>
 </div>
 
 <div class="main-content">
-    <!-- Painel Esquerdo: Texto de Apoio / Descrição da Ficha -->
     <div class="left-panel">
         <h2 class="text-primary border-bottom-primary pb-2">Texto de Apoio / Descrição</h2>
         <div class="split-screen-text" th:text="${ficha.descricao}">
             Texto longo de apoio aqui...
         </div>
     </div>
+    
+    <div class="right-panel">
+        <form id="resolucaoForm" th:action="@{/aluno/ficha/{codigo}(codigo=${ficha.codigoAcessoPublico})}" method="post">
+            <input type="hidden" name="nomeAluno" th:value="${nomeAluno}" />
+            <input type="hidden" id="tempoGastoSegundos" name="tempoGastoSegundos" value="0" />
+            
+            <p th:if="${#lists.isEmpty(ficha.perguntas)}" class="text-muted" style="text-align: center; margin-top: 2rem;">Esta ficha não tem perguntas.</p>
             
             <div class="question-card" th:each="pergunta, iterStat : ${ficha.perguntas}">
-                <h3><span th:text="${iterStat.count}">1</span>. <span th:text="${pergunta.enunciado}">Qual é a pergunta?</span></h3>
-                <textarea th:name="'resposta_' + ${pergunta.id}" placeholder="Escreve a tua resposta aqui..." required></textarea>
+                <span class="question-number">Pergunta <span th:text="${iterStat.count}"></span></span>
+                <div class="question-text" th:text="${pergunta.enunciado}">Qual é a pergunta?</div>
+                
+                <!-- Mostrar anexos se existirem -->
+                <div th:if="${!pergunta.anexos.isEmpty()}" style="margin-bottom: 15px; display: flex; flex-wrap: wrap; gap: 10px;">
+                    <div th:each="anexo : ${pergunta.anexos}" style="max-width: 100%;">
+                        <img th:if="${anexo.tipoConteudo != null and anexo.tipoConteudo.startsWith('image/')}" 
+                             th:src="@{'/uploads/perguntas/' + ${anexo.caminhoServidor}}" style="max-width: 100%; height: auto; border-radius: 4px; border: 1px solid #ccc;">
+                        
+                        <video th:if="${anexo.tipoConteudo != null and anexo.tipoConteudo.startsWith('video/')}" width="100%" controls style="border-radius: 4px; border: 1px solid #ccc;">
+                            <source th:src="@{'/uploads/perguntas/' + ${anexo.caminhoServidor}}" th:type="${anexo.tipoConteudo}">
+                        </video>
+                    </div>
+                </div>
+
+                <!-- Input consoante o tipo de pergunta -->
+                <div th:if="${pergunta.tipo == 'ESCOLHA_MULTIPLA'}">
+                    <label class="radio-option" th:each="opcao : ${pergunta.opcoes}">
+                        <input type="radio" th:name="'resposta_' + ${pergunta.id}" th:value="${opcao.texto}" required>
+                        <span th:text="${opcao.texto}"></span>
+                    </label>
+                    <p th:if="${pergunta.opcoes.isEmpty()}" class="text-muted" style="font-size: 0.9rem;">(Sem opções configuradas)</p>
+                </div>
+                
+                <div th:if="${pergunta.tipo == 'VERDADEIRO_FALSO'}">
+                    <label class="radio-option">
+                        <input type="radio" th:name="'resposta_' + ${pergunta.id}" value="Verdadeiro" required> Verdadeiro
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" th:name="'resposta_' + ${pergunta.id}" value="Falso" required> Falso
+                    </label>
+                </div>
+
+                <div th:if="${pergunta.tipo == 'TEXTO_LIVRE' or pergunta.tipo == null}">
+                    <textarea class="form-control" th:name="'resposta_' + ${pergunta.id}" rows="4" placeholder="Escreve a tua resposta aqui..." required></textarea>
+                </div>
             </div>
             
             <button type="submit" class="btn-submit" th:unless="${#lists.isEmpty(ficha.perguntas)}">Submeter e Terminar Ficha</button>
@@ -61,7 +105,6 @@
 </div>
 
 <script>
-    // Lógica do Cronómetro em JS Puro
     const startTime = Date.now();
     const timerDisplay = document.getElementById('timerDisplay');
     const tempoInput = document.getElementById('tempoGastoSegundos');
@@ -78,7 +121,6 @@
         tempoInput.value = diffEmSegundos;
     }, 1000);
     
-    // Confirmação antes de submeter
     document.getElementById('resolucaoForm').addEventListener('submit', function(e) {
         if(!confirm('Tens a certeza que queres submeter a ficha? Não poderás voltar atrás.')) {
             e.preventDefault();
