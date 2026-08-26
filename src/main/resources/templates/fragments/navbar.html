@@ -3,8 +3,8 @@
     <div class="d-flex align-items-center">
         <h1 class="navbar-brand mr-4" style="margin-right: 40px !important;">SaaS Curricular</h1>
         <div class="header-links">
-            <a th:href="@{/fichas}" th:classappend="${#httpServletRequest.requestURI != null and #httpServletRequest.requestURI.startsWith('/fichas')} ? 'active-link' : ''" class="navbar-link mr-3">Fichas</a>
-            <a th:href="@{/perguntas}" th:classappend="${#httpServletRequest.requestURI != null and #httpServletRequest.requestURI.startsWith('/perguntas')} ? 'active-link' : ''" class="navbar-link">Perguntas</a>
+            <a th:href="@{/fichas}" class="navbar-link mr-3">Fichas</a>
+            <a th:href="@{/perguntas}" class="navbar-link">Perguntas</a>
         </div>
     </div>
     <div class="d-flex align-items-center">
@@ -13,4 +13,16 @@
             <button type="submit" class="logout-btn">Sair</button>
         </form>
     </div>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var path = window.location.pathname;
+            document.querySelectorAll('.navbar-link').forEach(function(link) {
+                var href = link.getAttribute('href');
+                if (href && path.startsWith(href)) {
+                    link.classList.add('active-link');
+                }
+            });
+        });
+    </script>
 </div>
