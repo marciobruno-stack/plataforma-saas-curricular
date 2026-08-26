@@ -7,6 +7,13 @@
 
 <div layout:fragment="content">
     <div class="card">
+        <div class="mb-3" style="font-size: 0.95rem;">
+            <a th:href="@{/fichas}" style="color: #007bff; text-decoration: none;">Fichas</a> 
+            <span class="text-muted mx-2">/</span> 
+            <a th:href="@{/fichas/editar/{id}(id=${ficha.id})}" style="color: #007bff; text-decoration: none;" th:text="${ficha.titulo}"></a> 
+            <span class="text-muted mx-2">/</span> 
+            <strong>Publicar</strong>
+        </div>
         <h2 class="mt-0">Publicar Ficha</h2>
         <p class="text-muted mb-4">Estás prestes a partilhar a ficha <strong>"<span th:text="${ficha.titulo}">Titulo</span>"</strong> com os teus colegas de uma instituição.</p>
         
@@ -16,7 +23,9 @@
                 <select id="disciplinaId" name="disciplinaId" required>
                     <option value="" disabled selected>-- Seleciona a Instituição e Disciplina --</option>
                     <optgroup th:each="inst : ${instituicoes}" th:label="${inst.nome}">
-                        <option th:each="disc : ${inst.disciplinas}" th:value="${disc.id}" th:text="${disc.nome} + ' (' + ${disc.anoEscolaridade} + ')'"></option>
+                        <option th:each="disc : ${inst.disciplinas}" 
+                                th:if="${!ficha.disciplinasPartilhadas.contains(disc)}"
+                                th:value="${disc.id}" th:text="${disc.nome} + ' (' + ${disc.anoEscolaridade} + ')'"></option>
                     </optgroup>
                 </select>
             </div>

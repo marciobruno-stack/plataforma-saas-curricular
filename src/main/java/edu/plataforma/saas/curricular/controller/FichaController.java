@@ -22,6 +22,7 @@ public class FichaController {
     private final edu.plataforma.saas.curricular.service.PerguntaService perguntaService;
     private final edu.plataforma.saas.curricular.repository.PerguntaRepository perguntaRepository;
     private final PdfExportService pdfExportService;
+    private final edu.plataforma.saas.curricular.service.MoodleXmlExportService moodleXmlExportService;
 
     public FichaController(FichaService fichaService, 
                            edu.plataforma.saas.curricular.service.InstituicaoService instituicaoService, 
@@ -29,7 +30,8 @@ public class FichaController {
                            edu.plataforma.saas.curricular.service.PortalAlunoService portalAlunoService,
                            edu.plataforma.saas.curricular.service.PerguntaService perguntaService,
                            edu.plataforma.saas.curricular.repository.PerguntaRepository perguntaRepository,
-                           PdfExportService pdfExportService) {
+                           PdfExportService pdfExportService,
+                           edu.plataforma.saas.curricular.service.MoodleXmlExportService moodleXmlExportService) {
         this.fichaService = fichaService;
         this.instituicaoService = instituicaoService;
         this.disciplinaRepository = disciplinaRepository;
@@ -37,6 +39,7 @@ public class FichaController {
         this.perguntaService = perguntaService;
         this.perguntaRepository = perguntaRepository;
         this.pdfExportService = pdfExportService;
+        this.moodleXmlExportService = moodleXmlExportService;
     }
 
     @GetMapping
@@ -188,6 +191,24 @@ public class FichaController {
             return ResponseEntity.ok()
                     .headers(headers)
                     .body(pdfBytes);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/{id}/exportar/moodle")
+    public ResponseEntity<byte[]> exportarMoodleXml(@PathVariable Long id) {
+        Optional<Ficha> fichaOpt = fichaService.encontrarPorId(id);
+        if (fichaOpt.isPresent()) {
+            Ficha ficha = fichaOpt.get();
+            byte[] xmlBytes = moodleXmlExportService.exportarFichaParaMoodleXml(ficha);
+            
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_XML);
+            headers.setContentDispositionFormData("attachment", "ficha_" + id + "_moodle.xml");
+            
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .body(xmlBytes);
         }
         return ResponseEntity.notFound().build();
     }

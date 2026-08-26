@@ -40,7 +40,7 @@
                 <tr th:each="pergunta : ${perguntas}">
                     <td th:text="${pergunta.id}">1</td>
                     <td th:text="${pergunta.enunciado}">Enunciado</td>
-                    <td th:text="${pergunta.tipo}">Tipo</td>
+                    <td th:text="${pergunta.tipoFormatado}">Tipo</td>
                     <td>
                         <a th:href="@{/perguntas/editar/{id}(id=${pergunta.id})}" class="btn btn-primary" style="padding: 0.3rem 0.6rem;">Editar</a>
                         <form th:action="@{/perguntas/{id}(id=${pergunta.id})}" method="post" style="display: inline;" onsubmit="return confirm('Tem a certeza?');">

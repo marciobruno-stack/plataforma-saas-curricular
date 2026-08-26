@@ -24,20 +24,24 @@
                 <tr th:each="ficha : ${fichas}">
                     <td th:text="${ficha.titulo}">Título</td>
                     <td th:text="${ficha.descricao}">Descrição</td>
-                    <td>
-                        <button class="btn btn-secondary btn-sm" 
-                                th:onclick="navigator.clipboard.writeText(window.location.origin + '/aluno/ficha/' + [[${ficha.codigoAcessoPublico}]]); alert('Link de Execução copiado!');">Copiar Link</button>
-                        
+                    <td style="display: flex; gap: 5px;">
                         <a th:href="@{/fichas/{id}/perguntas(id=${ficha.id})}" class="btn btn-warning btn-sm">Perguntas</a>
-                        <a th:href="@{/fichas/{id}/resultados(id=${ficha.id})}" class="btn btn-info btn-sm">Resultados</a>
-                        <a th:href="@{/fichas/{id}/exportar/pdf(id=${ficha.id})}" class="btn btn-sm" style="background-color: #dc3545; color: white; border: none; padding: 0.3rem 0.6rem; border-radius: 4px; text-decoration: none;" target="_blank">Exportar PDF</a>
-                        
                         <a th:href="@{/fichas/publicar/{id}(id=${ficha.id})}" class="btn btn-success btn-sm">Publicar</a>
-                        <a th:href="@{/fichas/editar/{id}(id=${ficha.id})}" class="btn btn-primary btn-sm">Editar</a>
-                        <form th:action="@{/fichas/{id}(id=${ficha.id})}" method="post" class="inline-form" onsubmit="return confirm('Tem a certeza?');">
-                            <input type="hidden" name="_method" value="delete" />
-                            <button type="submit" class="btn btn-danger btn-sm">Apagar</button>
-                        </form>
+                        
+                        <div class="dropdown">
+                            <button class="btn btn-secondary btn-sm dropdown-btn">Ações ▼</button>
+                            <div class="dropdown-content">
+                                <button th:onclick="navigator.clipboard.writeText(window.location.origin + '/aluno/ficha/' + [[${ficha.codigoAcessoPublico}]]); alert('Link de Execução copiado!');">🔗 Copiar Link</button>
+                                <a th:href="@{/fichas/{id}/resultados(id=${ficha.id})}">📊 Resultados</a>
+                                <a th:href="@{/fichas/editar/{id}(id=${ficha.id})}">✏️ Editar</a>
+                                <a th:href="@{/fichas/{id}/exportar/pdf(id=${ficha.id})}" target="_blank">📄 Exportar PDF</a>
+                                <a th:href="@{/fichas/{id}/exportar/moodle(id=${ficha.id})}" target="_blank">📦 Exportar Moodle</a>
+                                <form th:action="@{/fichas/{id}(id=${ficha.id})}" method="post" onsubmit="return confirm('Tem a certeza que deseja apagar?');" style="margin: 0; padding: 0;">
+                                    <input type="hidden" name="_method" value="delete" />
+                                    <button type="submit" style="color: #dc3545;">🗑️ Apagar</button>
+                                </form>
+                            </div>
+                        </div>
                     </td>
                 </tr>
             </tbody>

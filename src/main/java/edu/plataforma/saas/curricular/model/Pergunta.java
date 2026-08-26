@@ -74,4 +74,14 @@ public class Pergunta {
     public void setTipo(String tipo) {
         this.tipo = tipo;
     }
+
+    public String getTipoFormatado() {
+        if (tipo == null) return "";
+        return switch (tipo) {
+            case "TEXTO_LIVRE" -> "Texto Livre";
+            case "ESCOLHA_MULTIPLA" -> "Escolha Múltipla";
+            case "VERDADEIRO_FALSO" -> "Verdadeiro / Falso";
+            default -> tipo;
+        };
+    }
 }

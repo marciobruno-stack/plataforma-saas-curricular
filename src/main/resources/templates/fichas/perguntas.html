@@ -7,7 +7,14 @@
 
 <div layout:fragment="content">
     <div class="card">
-        <h2 class="mt-0">Perguntas da Ficha: <span class="text-primary" th:text="${ficha.titulo}"></span></h2>
+        <div class="mb-3" style="font-size: 0.95rem;">
+            <a th:href="@{/fichas}" style="color: #007bff; text-decoration: none;">Fichas</a> 
+            <span class="text-muted mx-2">/</span> 
+            <a th:href="@{/fichas/editar/{id}(id=${ficha.id})}" style="color: #007bff; text-decoration: none;" th:text="${ficha.titulo}"></a> 
+            <span class="text-muted mx-2">/</span> 
+            <strong>Perguntas</strong>
+        </div>
+        <h2 class="mt-0">Gerir Perguntas da Ficha</h2>
         
         <h3 class="mt-4">Perguntas Incluídas</h3>
         <table th:if="${!ficha.perguntas.isEmpty()}">
@@ -21,7 +28,7 @@
             <tbody>
                 <tr th:each="pergunta : ${ficha.perguntas}">
                     <td th:text="${pergunta.enunciado}">Enunciado</td>
-                    <td th:text="${pergunta.tipo}">Tipo</td>
+                    <td th:text="${pergunta.tipoFormatado}">Tipo</td>
                     <td>
                         <form th:action="@{/fichas/{id}/perguntas/{perguntaId}(id=${ficha.id}, perguntaId=${pergunta.id})}" method="post" class="inline-form" onsubmit="return confirm('Tem a certeza que deseja remover esta pergunta da ficha?');">
                             <input type="hidden" name="_method" value="delete" />
@@ -42,7 +49,7 @@
                     <option th:each="pergunta : ${todasPerguntas}" 
                             th:if="${!ficha.perguntas.contains(pergunta)}"
                             th:value="${pergunta.id}" 
-                            th:text="${pergunta.enunciado} + ' (' + ${pergunta.tipo} + ')'"></option>
+                            th:text="${pergunta.enunciado} + ' (' + ${pergunta.tipoFormatado} + ')'"></option>
                 </select>
             </div>
             

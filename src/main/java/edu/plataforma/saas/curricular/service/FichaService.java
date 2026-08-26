@@ -28,7 +28,21 @@ public class FichaService {
 
     public List<Ficha> listar() {
         Utilizador formador = securityUtils.getCurrentUser();
-        return fichaRepository.findByFormador(formador);
+        List<Ficha> fichas = fichaRepository.findByFormador(formador);
+        
+        // Auto-migrar fichas antigas sem codigoAcessoPublico
+        boolean alterada = false;
+        for (Ficha f : fichas) {
+            if (f.getCodigoAcessoPublico() == null) {
+                f.setCodigoAcessoPublico(java.util.UUID.randomUUID().toString());
+                alterada = true;
+            }
+        }
+        if (alterada) {
+            fichaRepository.saveAll(fichas);
+        }
+        
+        return fichas;
     }
 
     public Optional<Ficha> encontrarPorId(Long id) {
