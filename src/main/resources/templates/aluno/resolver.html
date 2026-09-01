@@ -54,7 +54,7 @@
     </div>
     
     <div class="right-panel">
-        <form id="resolucaoForm" th:action="@{/aluno/ficha/{codigo}(codigo=${ficha.codigoAcessoPublico})}" method="post">
+        <form id="resolucaoForm" th:action="@{/aluno/ficha/{codigo}/submeter(codigo=${ficha.codigoAcessoPublico})}" method="post">
             <input type="hidden" name="nomeAluno" th:value="${nomeAluno}" />
             <input type="hidden" id="tempoGastoSegundos" name="tempoGastoSegundos" value="0" />
             
