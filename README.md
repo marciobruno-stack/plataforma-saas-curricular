@@ -70,4 +70,3 @@ Para validar se todo o fluxo da plataforma está funcional, siga estes passos:
 5. **Portal do Aluno:** No painel da disciplina, copie o link público da ficha (ícone `Copiar Link`). Faça logout na plataforma (ou abra o link em Navegação Anónima) para visualizar o Portal do Aluno, ver o cronómetro ativo, as opções formatadas em *Radio Buttons* e os anexos perfeitamente integrados no enunciado!
 
 ---
-*(Desenvolvido com auxílio de Antigravity AI)*
